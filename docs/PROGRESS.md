@@ -29,6 +29,14 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 
 ## Log
 
+## 2026-10-04 — Sesi dilangkau (PR #1 belum di-merge)
+Sesi dilangkau mengikut protokol langkah 0: PR #1 (task A1 — init projek)
+masih terbuka dan menunggu semakan Aqeef. Tiada task baharu dimulakan, kerana
+`main` belum mengandungi scaffold itu dan dua PR akan berlanggar. PR #1 tiada
+CI dikonfigurasi (belum ada `.github/workflows`), tiada komen dan tiada
+semakan — tiada apa-apa untuk dibetulkan di sana. Merge PR #1 untuk membuka
+sesi seterusnya; task seterusnya ialah A2.
+
 ## 2026-10-04 — A1 Init projek
 PR: https://github.com/aqeeflew/naeqah/pull/1
 Apa yang berubah: scaffold Next.js 16 (App Router) + React 19 + TypeScript +
@@ -61,6 +69,12 @@ Nota:
 - Disemak sendiri: `npm run verify` hijau, `npm run build` berjaya dengan `/`
   prerender statik, dan `curl localhost:3000` balas HTTP 200 dengan kandungan
   halaman. Test unit duduk sebelah sumber (`app/page.test.tsx`) ikut konvensyen.
+- Nota konflik: entri A1 ini dan nota "sesi dilangkau" dalam langkah 0
+  kedua-duanya menyelit betul-betul selepas `## Log`, jadi commit langkah 0 ke
+  `main` berlanggar dengan PR ini dan perlu diselesaikan dengan tangan. Sesi
+  akan datang: kalau anda menulis nota langkah 0 ke `main` semasa satu PR masih
+  terbuka, jangkakan konflik dalam fail ini dan selesaikan dengan menyimpan
+  kedua-dua entri, terbaru di atas.
 - Task seterusnya ialah A2 (skema pangkalan data). Ia perlu `DATABASE_URL`
   Neon untuk `db:push` dijalankan betul-betul — kalau kelayakan itu tiada, tulis
   skema dan test, dan catat `db:push` sebagai belum disahkan pada DB sebenar.
