@@ -10,6 +10,21 @@ sesi autonomous. Langkau dan ambil yang seterusnya.
 
 ---
 
+## Persediaan (Aqeef — sebelum coding)
+
+### [ ] 🔴 P1 — Daftar SSM
+Pendaftaran perniagaan. Semua payment gateway Malaysia perlu SSM aktif sebelum
+boleh buka akaun merchant. Mula awal — ini ambil masa paling lama.
+
+### [ ] 🔴 P2 — Buka akaun Neon (Postgres)
+Pangkalan data percuma untuk mula. Ambil connection string, simpan dalam `.env`
+tempatan. Jangan commit.
+
+### [ ] 🔴 P3 — Buka akaun Vercel
+Hosting. Sambung terus ke repo ini supaya setiap merge ke `main` auto-deploy.
+
+---
+
 ## Fasa A — Teras (Minggu 1–4)
 
 ### [ ] A1 — Init projek
