@@ -30,7 +30,7 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 ## Log
 
 ## 2026-10-04 — A1 Init projek
-PR: https://github.com/aqeeflew/naeqah/pull/PENDING
+PR: https://github.com/aqeeflew/naeqah/pull/1
 Apa yang berubah: scaffold Next.js 16 (App Router) + React 19 + TypeScript +
 Tailwind 4 dengan tangan (bukan `create-next-app`, kerana repo sudah ada
 `README.md` yang akan berlanggar). Tambah ESLint 9, Prettier, Vitest 5, skrip
