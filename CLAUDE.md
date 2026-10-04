@@ -19,6 +19,11 @@ ini. Semua konteks datang daripada fail dalam repo ini — itulah sebabnya
 
 Urutan setiap sesi:
 
+0. **Semak PR terbuka dahulu** (`gh pr list --state open`). Kalau ada PR task
+   yang belum di-merge, **berhenti di sini**. Jangan mula task baharu: sesi
+   akan datang akan bina atas `main` yang belum mengandungi kerja itu, dan dua
+   PR akan berlanggar. Tulis satu baris dalam `docs/PROGRESS.md` yang menyatakan
+   sesi dilangkau kerana PR #N menunggu semakan, commit nota itu, dan tamat.
 1. `git pull` pada `main` — pastikan terkini.
 2. Baca `docs/PROGRESS.md`, kemudian `docs/BACKLOG.md`.
 3. Ambil **satu** task `[ ]` pertama yang tiada blocker. Satu sahaja.
