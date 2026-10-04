@@ -29,6 +29,15 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 
 ## Log
 
+## 2026-10-04 — Sesi dilangkau (PR #1 belum di-merge)
+Sesi dilangkau mengikut protokol langkah 0: PR #1 (task A1 — init projek)
+masih terbuka dan menunggu semakan Aqeef. Tiada task baharu dimulakan, kerana
+`main` belum mengandungi scaffold itu dan dua PR akan berlanggar. PR #1 tiada
+CI dikonfigurasi (belum ada `.github/workflows`), tiada komen dan tiada
+semakan — tiada apa-apa untuk dibetulkan di sana. Merge PR #1 untuk membuka
+sesi seterusnya; task seterusnya ialah A2.
+
+
 ## 2026-10-04 — Scaffold awal
 PR: tiada (commit terus semasa persediaan)
 Apa yang berubah: cipta `CLAUDE.md`, `docs/SPEC.md`, `docs/BACKLOG.md`,
