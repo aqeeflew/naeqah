@@ -12,7 +12,7 @@ sesi autonomous. Langkau dan ambil yang seterusnya.
 
 ## Fasa A — Teras (Minggu 1–4)
 
-### [ ] A1 — Init projek
+### [x] A1 — Init projek
 Scaffold Next.js (App Router) + TypeScript + Tailwind. Tambah ESLint, Prettier,
 Vitest. Cipta skrip `verify` yang menjalankan typecheck, lint dan test.
 

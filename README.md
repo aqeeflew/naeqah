@@ -13,6 +13,24 @@ WhatsApp.
 | `docs/BACKLOG.md` | Task bertertib, satu task satu PR |
 | `docs/PROGRESS.md` | Apa yang sudah siap, apa yang tersekat |
 
+## Mula
+
+Perlu Node 22 atau lebih baharu.
+
+```
+npm install
+cp .env.example .env.local   # isi nilai sebenar; jangan commit fail ini
+npm run dev                  # http://localhost:3000
+```
+
+| Arahan | Apa ia buat |
+| --- | --- |
+| `npm run dev` | Server pembangunan |
+| `npm run build` | Build pengeluaran |
+| `npm run verify` | typecheck + lint + test — mesti hijau sebelum PR |
+| `npm run format` | Prettier tulis semua fail |
+| `npm test` | Vitest sekali jalan |
+
 ## Cara projek ini dibangunkan
 
 Satu scheduled task menjalankan sesi Claude Code secara berkala. Setiap sesi
