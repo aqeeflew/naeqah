@@ -38,7 +38,7 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 ## Log
 
 ## 2026-10-05 — A2c Betulkan pemuatan DATABASE_URL untuk drizzle-kit
-PR: <PR>
+PR: https://github.com/aqeeflew/naeqah/pull/5
 Apa yang berubah: tambah `lib/env.ts` (pemuat fail env + ralat yang boleh
 dibaca), sambungkan `drizzle.config.ts` kepadanya, dan buat
 `lib/db/index.ts` guna mesej ralat yang sama. Kemas kini `.env.example`.
