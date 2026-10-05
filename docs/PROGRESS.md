@@ -53,6 +53,17 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
     lebih suka tidak memberi kunci langsung, itu pilihan yang munasabah; cuma
     maknanya A5–A7 akan sampai sebagai kod yang belum dijalankan terhadap DB,
     dan Aqeef yang menjalankannya semasa semakan.
+- **P3 (Vercel) selesai — diperhatikan terus pada 5 Oktober.** Bot Vercel
+  mengulas pada PR #6 dan deployment preview sampai ke Ready, jadi sambungan
+  repo → Vercel wujud. **P2 ditanda selesai secara simpulan**, kerana A2b
+  tidak mungkin berjaya tanpanya. P1 (SSM) masih terbuka dan ia yang menyekat
+  B3a → B4/B5.
+- **Preview Vercel belum berguna untuk melihat kad.** Satu-satunya laluan dalam
+  app ialah `/`, jadi preview PR tidak memaparkan kad walaupun renderer sudah
+  ada. Itu bukan pepijat: laluan kad ialah A5 (`/kad/contoh-aqeef-nurul`) dan
+  B6. Selepas A5 di-merge, preview setiap PR jadi cara paling pantas untuk
+  Aqeef melihat perubahan tema dengan matanya sendiri — itu nilai sebenar
+  P3 untuk projek ini, dan ia bermula pada A5.
 - **Fasa A yang tinggal selepas A4:** A5 (tema pertama + seed), A5b 🔴 (reka
   bentuk 6 template — perlu pereka manusia), A6 (galeri), A7 (editor), A8
   (susun atur editor mobile).

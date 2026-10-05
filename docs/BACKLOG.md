@@ -16,12 +16,21 @@ sesi autonomous. Langkau dan ambil yang seterusnya.
 Pendaftaran perniagaan. Semua payment gateway Malaysia perlu SSM aktif sebelum
 boleh buka akaun merchant. Mula awal — ini ambil masa paling lama.
 
-### [ ] 🔴 P2 — Buka akaun Neon (Postgres)
+### [x] 🔴 P2 — Buka akaun Neon (Postgres)
 Pangkalan data percuma untuk mula. Ambil connection string, simpan dalam `.env`
 tempatan. Jangan commit.
 
-### [ ] 🔴 P3 — Buka akaun Vercel
+**Selesai.** Disimpulkan daripada A2b: `npm run db:push` tidak boleh berjaya
+tanpa akaun Neon dan connection string. Aqeef sahkan kalau ini silap.
+
+### [x] 🔴 P3 — Buka akaun Vercel
 Hosting. Sambung terus ke repo ini supaya setiap merge ke `main` auto-deploy.
+
+**Selesai 5 Oktober 2026.** Diperhatikan terus, bukan dilaporkan: bot Vercel
+kini mengulas pada PR repo ini dan deployment preview untuk
+`task/A4-card-renderer` sampai ke status Ready. Sambungan repo → Vercel wujud.
+Deploy pengeluaran pada merge ke `main` ikut daripada sambungan yang sama,
+tetapi belum pernah diperhatikan berlaku — ia akan berlaku pada merge pertama.
 
 ---
 
