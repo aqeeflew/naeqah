@@ -37,6 +37,16 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 
 ## Log
 
+## 2026-10-05 — Sesi dilangkau (PR #6 belum di-merge)
+Sesi dilangkau mengikut protokol langkah 0: PR #6 (task A4 — renderer kad,
+branch `task/A4-card-renderer`) masih terbuka dan menunggu semakan Aqeef.
+Tiada task baharu dimulakan, kerana `main` belum mengandungi
+`components/card/` dan task seterusnya (A5 — tema + seed) membina terus atas
+renderer itu; dua PR akan berlanggar. Semakan keadaan PR: Vercel hijau
+(deployment selesai), tiada semakan dan tiada komen yang belum dijawab —
+tiada apa-apa untuk dibetulkan di sana. PR #6 juga menanda A2b `[x]` atas
+laporan Aqeef. Merge PR #6 untuk membuka sesi seterusnya.
+
 ## 2026-10-05 — A2c Betulkan pemuatan DATABASE_URL untuk drizzle-kit
 PR: https://github.com/aqeeflew/naeqah/pull/5
 Apa yang berubah: tambah `lib/env.ts` (pemuat fail env + ralat yang boleh
