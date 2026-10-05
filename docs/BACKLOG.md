@@ -72,7 +72,7 @@ tarikh, masa, tempat, koordinat, atur cara, doa, gambar) dan
 **Siap bila:** kedua-dua skema ada taip TypeScript yang dieksport; test unit
 mengesahkan data sah diterima dan data rosak ditolak.
 
-### [ ] A4 — Renderer kad
+### [x] A4 — Renderer kad
 Bina `components/card/` yang menerima data kad + konfigurasi tema dan merender
 kad penuh. Tiada logik khusus-template di mana-mana.
 

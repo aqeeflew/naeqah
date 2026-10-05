@@ -29,13 +29,109 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
   akaun Neon, ambil `DATABASE_URL`, dan letak dalam `.env.local` — tiada
   langkah lain. Halangan alat sudah tiada: sebelum A2c, `npm run db:push`
   gagal walaupun dengan `.env.local` yang betul, kerana drizzle-kit tidak
-  membaca fail itu. Itu sudah dibaiki. Ini **tidak** menyekat A3/A4 —
-  kedua-duanya kerja TypeScript tulen tanpa DB. A3 sudah siap tanpa DB; A4
-  seterusnya, juga tanpa DB.
+  membaca fail itu. Itu sudah dibaiki. A3 dan A4 sudah siap tanpa DB.
+- **P2 kini halangan sebenar untuk Fasa A, bukan lagi hanya A2b.** A3 dan A4
+  ialah dua task terakhir yang boleh disiapkan tanpa pangkalan data. Kriteria
+  "Siap bila" bagi A5 ialah `npm run db:seed` berjaya; A6 mesti membaca galeri
+  **dari DB, bukan senarai hardcoded**; A7 menyimpan draf. Ketiga-tiganya
+  memerlukan `DATABASE_URL`. **Sesi seterusnya kemungkinan besar akan berhenti
+  pada A5 melainkan P2 sudah selesai** — satu akaun Neon percuma dan satu
+  baris dalam `.env.local` membuka tiga task sekali gus. Ini satu-satunya
+  perkara yang Aqeef perlu buat untuk Fasa A terus berjalan.
 
 ---
 
 ## Log
+
+## 2026-10-05 — A4 Renderer kad
+PR: <PR_URL>
+Apa yang berubah: tambah `components/card/` — `card-renderer.tsx` (akar),
+`card-sections.tsx` (satu komponen setiap seksyen + `sectionRegistry`),
+`card-theme.ts` (tema → CSS custom properties), `card-format.ts` (tarikh dan
+masa Bahasa Malaysia), `placeholder-card.ts` (satu kad rekaan untuk preview
+A6 dan test), dan `index.ts`. 310 test hijau, termasuk 112 test baharu.
+Keputusan yang diambil:
+- **Seksyen dipilih melalui `sectionRegistry`, bukan melalui `if`.** Renderer
+  berjalan atas `theme.layout.sections`, mencari setiap id dalam satu
+  `Record<SectionId, …>`, dan merender apa yang dijumpainya. Taip `Record`
+  itu bermakna menambah id baharu pada `sectionIdSchema` **tanpa** blok di
+  sini gagal typecheck — satu tema tidak boleh menamakan seksyen yang
+  renderer senyap-senyap buang. Inilah mekanisme yang menggantikan kod
+  per-template; jangan ganti dengan senarai JSX yang disusun tangan.
+- **Seksyen kosong dibuang sebelum pemisah diletak.** `visibleSections()`
+  menapis seksyen yang tiada kandungan (tema senarai `doa`, pengantin tidak
+  tulis doa). Kalau tidak, tetamu nampak tajuk kosong dengan garis di
+  bawahnya, yang kelihatan seperti pepijat. Bilangan pemisah sentiasa
+  `seksyen − 1`, dan ada test untuk itu pada kad paling nipis yang skema
+  benarkan.
+- **`rsvp` dan `ucapan` sentiasa ada kandungan.** Kedua-duanya bekas untuk
+  apa yang tetamu hantar (B8, B9), bukan untuk data kad, jadi
+  `hasContent` mereka sentiasa benar.
+- **`<img>` biasa, bukan `next/image`.** Pengoptimum `next/image` ialah laluan
+  pelayan (`/_next/image`), jadi setiap gambar pada kad "statik" akan
+  bergantung pada app hidup. Keputusan seni bina 1 dalam `SPEC.md` kata kad
+  mesti tetap buka kalau app atau DB down pada pagi majlis. Ada
+  `eslint-disable-next-line` dengan sebab itu ditulis pada `Photo`. Jangan
+  tukar ke `next/image` tanpa membatalkan janji itu secara sedar.
+- **Tiada `Intl` untuk nama bulan dan hari.** `next build` boleh berjalan pada
+  Node tanpa ICU penuh, dan `Intl.DateTimeFormat('ms-MY')` jatuh balik ke
+  English secara senyap — kad akan tertulis "March". Jadual bulan dan hari
+  ditulis tangan dalam `card-format.ts`. Ada test yang menegaskan
+  `formatCardDateShort('2027-03-01')` tidak mengandungi "March".
+- **Masa guna titik, bukan titik bertindih:** `14:30` → `2.30 petang`, ikut
+  cara kad Malaysia ditulis. Sempadan waktu: 0 `tengah malam`, 1–11 `pagi`,
+  12 `tengah hari`, 13–18 `petang`, 19–23 `malam`.
+- **Susunan nama pengantin datang daripada `couple.host`, bukan daripada
+  tema.** Pihak yang menjemput disebut dahulu. Itu fakta tentang majlis, dan
+  kalau tema boleh menyusun semula, setiap template akan menduplikasi
+  peraturan yang sama.
+- **Hanya `card-theme.ts` menukar tema kepada gaya.** Semua seksyen melukis
+  daripada custom properties (`--card-primary`, `--card-font-display`, …)
+  yang dibina di situ. Tiada warna hex dalam mana-mana komponen.
+- **`theme.name` tidak pernah dibaca oleh renderer.** Ia label untuk pereka
+  dan galeri. Ada test yang mengimbas sumber dan gagal kalau mana-mana fail
+  menyentuhnya — itu cara paling mudah untuk per-template branching menyelinap
+  masuk.
+- **Veil atas gambar latar ialah lapisan gradien, bukan `opacity`.** Satu
+  `background-image` tidak boleh membawa opacity sendiri. Corak pula malap ke
+  arah warna asasnya sendiri, bukan ke arah putih, supaya tema gelap kekal
+  gelap.
+- **`googleFontsHref()` dipulangkan, bukan dirender.** Pautan stylesheet milik
+  `<head>` halaman `/kad/[slug]` (B6); `<link>` dari dalam badan kad dimuat
+  lewat dan menyebabkan teks berkelip. Tema yang guna font sistem sahaja
+  mendapat `undefined` — sifar permintaan rangkaian.
+- **Pautan Maps dan Waze sengaja tiada.** Itu B7, yang mesti berfungsi dari
+  alamat bertulis sahaja tanpa koordinat. Membinanya separuh di sini bermakna
+  dua tempat untuk dibetulkan. Ada test yang menegaskan blok lokasi tidak
+  mengandungi sebarang `<a>`.
+- **Blok RSVP tiada borang dan tiada teks PDPA.** Borang ialah B8; teks notis
+  ialah C6a dan **mesti** disemak manusia. Ada test yang menegaskan tiada
+  `<form>`/`<input>` dan tiada perkataan "PDPA"/"persetujuan" dalam output.
+Nota:
+- **Sifar pakej baharu.** `package.json` tidak berubah langsung.
+- **Renderer ialah server component tulen** — tiada `use client`, tiada hook,
+  tiada pengendali acara. Tiga test mengimbas sumber untuk ketiga-tiganya,
+  supaya sesi akan datang tidak memecahkan prarender tanpa sedar.
+- Disahkan dengan build sebenar, bukan hanya test: satu laluan sementara
+  `app/probe-kad/page.tsx` ditambah, `npm run build` memberi
+  `○ /probe-kad (Static)`, dan `.next/server/app/probe-kad.html` mengandungi
+  "Sabtu, 15 Mei 2027", "Dibuat dengan Naeqah" dan kesembilan `data-section`
+  mengikut susunan tema. Laluan itu **dibuang** selepas semakan — laluan kad
+  sebenar ialah A5/B6, dan satu task satu sesi.
+- `test-themes.ts` ialah dua tema yang sengaja berbeza pada **setiap** paksi
+  skema. Ia test-only; tema sebenar pertama ialah `lib/themes/klasik.json`
+  (A5). Jangan import `test-themes.ts` dari kod app.
+- `placeholder-card.ts` **tiada gambar** dengan sengaja: setiap rujukan imej
+  perlu fail dalam `public/`, dan aset berlesen datang dengan A5b. Preview A6
+  yang memaparkan ikon gambar rosak lebih teruk daripada preview teks sahaja.
+  Tambah `photos` di situ selepas A5b.
+- Jarak sekitar `&` pada kad kulit ditulis sebagai `{' '}` eksplisit, bukan
+  `mx-2` sahaja. Margin memberi ruang visual tetapi `textContent` jadi
+  "Zulkifli&Aisyah" — itu yang pembaca skrin sebut dan yang tetamu salin.
+- Disemak sendiri: `npm run verify` hijau (310 test), `npm run build` berjaya
+  dengan `/` masih statik, `npx prettier --check .` bersih.
+- **Task seterusnya ialah A5, dan ia kemungkinan besar tersekat pada P2.**
+  Lihat `## Tersekat` di atas — `npm run db:seed` perlu `DATABASE_URL`.
 
 ## 2026-10-05 — A2c Betulkan pemuatan DATABASE_URL untuk drizzle-kit
 PR: https://github.com/aqeeflew/naeqah/pull/5
