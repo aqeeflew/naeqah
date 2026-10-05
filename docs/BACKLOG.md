@@ -46,10 +46,16 @@ primary key, timestamp, dan foreign key yang betul; `cards.slug` unik dan
 berindeks; `npm run verify` hijau. Pengesahan terhadap DB sebenar berlaku dalam
 A2b, bukan di sini.
 
-### [ ] 🔴 A2b — Sahkan skema pada Neon
+### [x] 🔴 A2b — Sahkan skema pada Neon
 Perlu `DATABASE_URL` dari P2. Jalankan `npm run db:push` pada DB kosong dan
 sahkan setiap jadual terbina seperti yang dijangka. Kalau ada beza, betulkan
 skema dalam A2 dan jana semula migrasi.
+
+**Selesai 5 Oktober 2026 oleh Aqeef sendiri, di luar repo.** Keenam-enam jadual
+wujud dalam Neon; `cards_slug_unique` ada; foreign key `cards` → `bookings`
+dengan `ON DELETE CASCADE` disahkan betul. Tiada perubahan skema diperlukan.
+Sesi autonomous tidak menjalankan `db:push` dan tidak boleh mengesahkannya
+sendiri — ia direkodkan di sini seperti yang dilaporkan.
 
 ### [x] A2c — Betulkan pemuatan DATABASE_URL untuk drizzle-kit
 `drizzle.config.ts` membaca `process.env.DATABASE_URL`, tetapi tiada apa-apa

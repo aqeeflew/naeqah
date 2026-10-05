@@ -24,20 +24,38 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 - **A5b, B3a, C6a** memerlukan Aqeef — lihat `BACKLOG.md`. B3a (kelayakan
   ToyyibPay sandbox) menyekat B4 dan B5, iaitu separuh Fasa B. Ia bermula
   dengan pendaftaran SSM, yang mengambil masa paling lama. Mulakan awal.
-- **A2b menunggu P2 sahaja sekarang.** Skema dan migrasi SQL sudah siap (A2),
-  tetapi belum pernah dijalankan terhadap Postgres sebenar. Aqeef perlu buka
-  akaun Neon, ambil `DATABASE_URL`, dan letak dalam `.env.local` — tiada
-  langkah lain. Halangan alat sudah tiada: sebelum A2c, `npm run db:push`
-  gagal walaupun dengan `.env.local` yang betul, kerana drizzle-kit tidak
-  membaca fail itu. Itu sudah dibaiki. A3 dan A4 sudah siap tanpa DB.
-- **P2 kini halangan sebenar untuk Fasa A, bukan lagi hanya A2b.** A3 dan A4
-  ialah dua task terakhir yang boleh disiapkan tanpa pangkalan data. Kriteria
-  "Siap bila" bagi A5 ialah `npm run db:seed` berjaya; A6 mesti membaca galeri
-  **dari DB, bukan senarai hardcoded**; A7 menyimpan draf. Ketiga-tiganya
-  memerlukan `DATABASE_URL`. **Sesi seterusnya kemungkinan besar akan berhenti
-  pada A5 melainkan P2 sudah selesai** — satu akaun Neon percuma dan satu
-  baris dalam `.env.local` membuka tiga task sekali gus. Ini satu-satunya
-  perkara yang Aqeef perlu buat untuk Fasa A terus berjalan.
+- **A2b SELESAI (5 Oktober).** Aqeef menjalankan `npm run db:push` sendiri
+  terhadap Neon sebenar. Keenam-enam jadual wujud, `cards_slug_unique` ada,
+  dan foreign key `cards` → `bookings` dengan `ON DELETE CASCADE` disahkan
+  betul. Tiada perubahan skema diperlukan — A2 lulus seperti ditulis. Sesi ini
+  **tidak** menjalankan `db:push` dan tidak mengesahkannya sendiri; ia
+  direkodkan seperti yang dilaporkan oleh Aqeef.
+- **Satu `DATABASE_URL` yang wujud TIDAK sama dengan sesi autonomous yang
+  boleh mencapainya.** Ini perbezaan yang akan menjatuhkan sesi seterusnya
+  kalau tidak difahami. Setiap sesi berjadual bermula dalam bekas kosong:
+  ia melakukan `git clone`, dan `.env.local` ada dalam `.gitignore`, jadi
+  **tiada `DATABASE_URL` dalam bekas itu**. Pangkalan data Aqeef hidup di
+  Neon, tetapi sesi autonomous tidak ada kuncinya.
+  - Akibatnya untuk **A5**: `lib/themes/klasik.json` dan skrip `db:seed` boleh
+    ditulis sepenuhnya tanpa DB, dan `npm run verify` akan hijau. Yang **tidak**
+    boleh dibuktikan ialah kriteria "`npm run db:seed` berjaya" dan "kad contoh
+    dirender di `/kad/contoh-aqeef-nurul`". Sesi seterusnya patut menulis A5
+    sepenuhnya, kemudian menyatakan dengan jujur bahawa seed belum pernah
+    dijalankan — sama seperti A2 menulis skema tanpa menjalankan `db:push`.
+    Jangan berhenti tanpa menulis apa-apa; jangan juga mendakwa seed berjaya.
+  - Akibatnya untuk **A6 dan A7**: kedua-duanya membaca dan menulis DB semasa
+    request, jadi ia perlu kunci sebenar untuk diuji betul-betul.
+  - **Apa yang Aqeef boleh buat kalau mahu sesi autonomous mencapai DB:**
+    sediakan `DATABASE_URL` kepada persekitaran sesi berjadual itu (sebagai
+    rahsia persekitaran, bukan fail yang dicommit). Gunakan **branch Neon
+    berasingan untuk sesi autonomous**, bukan branch pengeluaran — supaya
+    `db:push` atau seed yang silap tidak menyentuh data sebenar. Kalau Aqeef
+    lebih suka tidak memberi kunci langsung, itu pilihan yang munasabah; cuma
+    maknanya A5–A7 akan sampai sebagai kod yang belum dijalankan terhadap DB,
+    dan Aqeef yang menjalankannya semasa semakan.
+- **Fasa A yang tinggal selepas A4:** A5 (tema pertama + seed), A5b 🔴 (reka
+  bentuk 6 template — perlu pereka manusia), A6 (galeri), A7 (editor), A8
+  (susun atur editor mobile).
 
 ---
 
@@ -128,10 +146,32 @@ Nota:
 - Jarak sekitar `&` pada kad kulit ditulis sebagai `{' '}` eksplisit, bukan
   `mx-2` sahaja. Margin memberi ruang visual tetapi `textContent` jadi
   "Zulkifli&Aisyah" — itu yang pembaca skrin sebut dan yang tetamu salin.
-- Disemak sendiri: `npm run verify` hijau (310 test), `npm run build` berjaya
+- **Mobile-first disahkan dengan ukuran sebenar, bukan anggaran.** Laluan
+  probe dirender dalam Chromium pada viewport 390x844 dengan kes paling teruk
+  yang skema benarkan: nama penuh terpanjang, `textScale` 1.4, kulit
+  `penuh`, galeri, dan alamat dua baris panjang. `document.scrollWidth`
+  kekal **390** dan **sifar** elemen melepasi tepi kanan. Satu test imbasan
+  sumber ditambah sebagai pengawal regresi (tiada `min-w-`, tiada `w-screen`,
+  tiada lebar tetap >= 390px) — jsdom tidak boleh mengukur susun atur, jadi
+  ukuran sebenar berlaku sekali di sini dan imbasan itu menjaganya.
+- **Perangkap:** membuang laluan probe meninggalkan taip terjana basi dalam
+  `.next/types/validator.ts`, dan `npm run typecheck` gagal dengan "Cannot
+  find module '../../app/probe-kad/page.js'" walaupun fail itu sudah tiada.
+  `rm -rf .next` membereskannya. Sesi akan datang yang membuang mana-mana
+  laluan: buang `.next` sebelum percaya typecheck yang merah.
+- Dalam tangkapan skrin probe, gambar galeri kelihatan sebagai kotak rosak
+  dengan jurang menegak yang pelik. Itu kerana fail probe memang tidak wujud:
+  Chromium melukis imej 404 pada saiz intrinsiknya dan mengabaikan
+  `aspect-ratio`. CSS `aspect-square` **betul** dalam bundle
+  (`.aspect-square{aspect-ratio:1}`) dan gambar sebenar akan jadi segi empat
+  sama. Jangan "betulkan" ini.
+- Disemak sendiri: `npm run verify` hijau (312 test), `npm run build` berjaya
   dengan `/` masih statik, `npx prettier --check .` bersih.
-- **Task seterusnya ialah A5, dan ia kemungkinan besar tersekat pada P2.**
-  Lihat `## Tersekat` di atas — `npm run db:seed` perlu `DATABASE_URL`.
+- **Task seterusnya ialah A5.** Baca `## Tersekat` di atas dahulu: Neon sudah
+  hidup (A2b selesai), tetapi sesi autonomous tidak ada kuncinya, jadi A5
+  patut ditulis sepenuhnya dan dihantar dengan seed yang belum dijalankan.
+- A2b ditanda `[x]` dalam PR ini atas laporan Aqeef, bukan atas pengesahan
+  sesi ini. Ia dicatat begitu dalam `BACKLOG.md` juga.
 
 ## 2026-10-05 — A2c Betulkan pemuatan DATABASE_URL untuk drizzle-kit
 PR: https://github.com/aqeeflew/naeqah/pull/5

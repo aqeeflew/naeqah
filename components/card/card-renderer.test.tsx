@@ -182,6 +182,34 @@ describe('the card stays static', () => {
   });
 });
 
+describe('mobile-first', () => {
+  it('caps the content column instead of letting it run to the viewport edge', () => {
+    const { container } = render(
+      <CardRenderer data={placeholderCardData} theme={lightTheme} />,
+    );
+    const column = container.querySelector('[data-naeqah-card] > div');
+
+    expect(column?.className).toMatch(/\bmax-w-/);
+  });
+
+  it('pins nothing to a width a 390px phone cannot show', () => {
+    // Measured for real at 390x844 in Chromium: scrollWidth stayed at 390 with
+    // the longest names the schema allows and textScale at its 1.4 maximum.
+    // This scan is the cheap regression guard for that result — a fixed width
+    // or a min-width is how horizontal scroll usually creeps back in.
+    for (const { name, source } of sourceFiles()) {
+      const code = stripComments(source);
+
+      expect(code, name).not.toMatch(/\bmin-w-/);
+      expect(code, name).not.toMatch(/\bw-screen\b/);
+
+      for (const [, width] of code.matchAll(/\bw-\[(\d+)px\]/g)) {
+        expect(Number(width), `${name} pins a width of ${width}px`).toBeLessThan(390);
+      }
+    }
+  });
+});
+
 /* -------------------------------------------------------------------------- */
 /* Dividers, branding, degenerate data                                        */
 /* -------------------------------------------------------------------------- */
