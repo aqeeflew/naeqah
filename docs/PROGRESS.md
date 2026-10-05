@@ -36,7 +36,7 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 ## Log
 
 ## 2026-10-05 — A3 Skema kad + taip tema
-PR: <PR_URL>
+PR: https://github.com/aqeeflew/naeqah/pull/4
 Apa yang berubah: tambah `zod` sebagai dependency pengeluaran, tulis
 `lib/card-schema.ts` (data majlis: pengantin, ibu bapa, tarikh, masa, tempat,
 koordinat, atur cara, doa, gambar, hubungi) dan `lib/theme-schema.ts` (palet,
