@@ -44,7 +44,7 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 ## Log
 
 ## 2026-10-05 — A4 Renderer kad
-PR: <PR_URL>
+PR: https://github.com/aqeeflew/naeqah/pull/6
 Apa yang berubah: tambah `components/card/` — `card-renderer.tsx` (akar),
 `card-sections.tsx` (satu komponen setiap seksyen + `sectionRegistry`),
 `card-theme.ts` (tema → CSS custom properties), `card-format.ts` (tarikh dan
