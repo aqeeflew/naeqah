@@ -1,0 +1,8 @@
+node_modules
+.next
+coverage
+package-lock.json
+
+# Dokumen protokol ditulis-tangan dengan baris dibalut manual —
+# biarkan Prettier jangan ubah susunan jadual dan balutan prosa.
+*.md
