@@ -37,11 +37,19 @@ lulus hijau; `.env.example` wujud; `.gitignore` meliputi `.env`, `node_modules`,
 
 ### [ ] A2 — Skema pangkalan data
 Sediakan Drizzle + Postgres. Tulis skema untuk `users`, `templates`, `bookings`,
-`cards`, `rsvps`, `wishes` mengikut `SPEC.md`.
+`cards`, `rsvps`, `wishes` mengikut `SPEC.md`. Jana fail migrasi SQL dengan
+`drizzle-kit generate` — langkah ini **tidak perlu** sambungan DB hidup, jadi
+task ini boleh disiapkan sebelum P2 selesai.
 
-**Siap bila:** `npm run db:push` berjaya pada DB kosong; setiap jadual ada
+**Siap bila:** `npm run db:generate` hasilkan SQL migrasi; setiap jadual ada
 primary key, timestamp, dan foreign key yang betul; `cards.slug` unik dan
-berindeks.
+berindeks; `npm run verify` hijau. Pengesahan terhadap DB sebenar berlaku dalam
+A2b, bukan di sini.
+
+### [ ] 🔴 A2b — Sahkan skema pada Neon
+Perlu `DATABASE_URL` dari P2. Jalankan `npm run db:push` pada DB kosong dan
+sahkan setiap jadual terbina seperti yang dijangka. Kalau ada beza, betulkan
+skema dalam A2 dan jana semula migrasi.
 
 ### [ ] A3 — Skema kad + taip tema
 Tulis `lib/card-schema.ts` (bentuk data majlis: nama pengantin, nama ibu bapa,
