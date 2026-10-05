@@ -6,3 +6,6 @@ package-lock.json
 # Dokumen protokol ditulis-tangan dengan baris dibalut manual —
 # biarkan Prettier jangan ubah susunan jadual dan balutan prosa.
 *.md
+
+# Migrasi dan metadata dijana oleh drizzle-kit — jangan format semula.
+drizzle/

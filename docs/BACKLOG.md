@@ -35,7 +35,7 @@ Vitest. Cipta skrip `verify` yang menjalankan typecheck, lint dan test.
 lulus hijau; `.env.example` wujud; `.gitignore` meliputi `.env`, `node_modules`,
 `.next`.
 
-### [ ] A2 — Skema pangkalan data
+### [x] A2 — Skema pangkalan data
 Sediakan Drizzle + Postgres. Tulis skema untuk `users`, `templates`, `bookings`,
 `cards`, `rsvps`, `wishes` mengikut `SPEC.md`. Jana fail migrasi SQL dengan
 `drizzle-kit generate` — langkah ini **tidak perlu** sambungan DB hidup, jadi
