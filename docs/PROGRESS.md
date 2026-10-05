@@ -9,7 +9,7 @@ Format entri (terbaru di atas):
 
 ```
 ## YYYY-MM-DD — <ID task> <tajuk>
-PR: <pautan>
+PR: https://github.com/aqeeflew/naeqah/pull/3
 Apa yang berubah: <2–3 baris>
 Keputusan yang diambil: <apa-apa yang sesi akan datang perlu tahu>
 Nota: <apa yang mengejutkan, apa yang rapuh>
@@ -35,7 +35,7 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 ## Log
 
 ## 2026-10-05 — A2 Skema pangkalan data
-PR: <pautan>
+PR: https://github.com/aqeeflew/naeqah/pull/3
 Apa yang berubah: tambah Drizzle ORM + `@neondatabase/serverless`, tulis
 `lib/db/schema.ts` (enam jadual: `users`, `templates`, `bookings`, `cards`,
 `rsvps`, `wishes`) dan `lib/db/index.ts` (klien dengan sambungan malas). Jana
