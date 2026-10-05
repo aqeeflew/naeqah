@@ -24,16 +24,82 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 - **A5b, B3a, C6a** memerlukan Aqeef — lihat `BACKLOG.md`. B3a (kelayakan
   ToyyibPay sandbox) menyekat B4 dan B5, iaitu separuh Fasa B. Ia bermula
   dengan pendaftaran SSM, yang mengambil masa paling lama. Mulakan awal.
-- **A2b menunggu P2.** Skema dan migrasi SQL sudah siap (A2), tetapi belum
-  pernah dijalankan terhadap Postgres sebenar. Aqeef perlu buka akaun Neon,
-  ambil `DATABASE_URL`, dan letak dalam `.env.local`. Selepas itu `npm run
-  db:push` boleh dijalankan dan A2b disahkan. Ini **tidak** menyekat A3/A4 —
+- **A2b menunggu P2 sahaja sekarang.** Skema dan migrasi SQL sudah siap (A2),
+  tetapi belum pernah dijalankan terhadap Postgres sebenar. Aqeef perlu buka
+  akaun Neon, ambil `DATABASE_URL`, dan letak dalam `.env.local` — tiada
+  langkah lain. Halangan alat sudah tiada: sebelum A2c, `npm run db:push`
+  gagal walaupun dengan `.env.local` yang betul, kerana drizzle-kit tidak
+  membaca fail itu. Itu sudah dibaiki. Ini **tidak** menyekat A3/A4 —
   kedua-duanya kerja TypeScript tulen tanpa DB. A3 sudah siap tanpa DB; A4
   seterusnya, juga tanpa DB.
 
 ---
 
 ## Log
+
+## 2026-10-05 — A2c Betulkan pemuatan DATABASE_URL untuk drizzle-kit
+PR: <PR>
+Apa yang berubah: tambah `lib/env.ts` (pemuat fail env + ralat yang boleh
+dibaca), sambungkan `drizzle.config.ts` kepadanya, dan buat
+`lib/db/index.ts` guna mesej ralat yang sama. Kemas kini `.env.example`.
+218 test hijau, termasuk 20 test baharu. Task ini **tidak** dalam backlog
+asal — Aqeef jumpa bug ini sendiri semasa menyemak, dan ia ditambah sebagai
+A2c dalam PR yang sama.
+Keputusan yang diambil:
+- **Punca bug, supaya tiada sesi mengulanginya:** `.env.local` bukan sesuatu
+  yang Node baca sendiri. **Next.js** yang membacanya — setiap arahan `next`
+  memuatkan fail itu ke dalam `process.env` sebelum kod aplikasi berjalan.
+  `drizzle-kit` ialah CLI yang lain sepenuhnya; ia tidak tahu apa-apa tentang
+  Next.js, jadi `process.env.DATABASE_URL` kosong di dalamnya. `?? ''` dalam
+  config lama menukar "tiada" itu menjadi rentetan kosong, dan drizzle-kit
+  melaporkannya sebagai `[x] url: ''` — mesej yang menunjuk ke arah yang
+  salah. **Peraturan am: apa-apa yang dijalankan tanpa `next` mesti memuatkan
+  fail env sendiri.** Itu termasuk `db:seed` (A5) dan kerja penyimpanan (C7).
+- **`process.loadEnvFile()`, bukan pakej `dotenv`.** Ia terbina dalam Node
+  (kita pada 22) dan ialah penghurai yang sama di belakang `node --env-file`.
+  Lebih penting: **ia tidak menimpa pembolehubah yang sudah ada dalam
+  `process.env`**, jadi keutamaan jadi betul dengan sendirinya —
+  persekitaran sebenar (Vercel, CI) > `.env.local` > `.env`. Menambah
+  `dotenv` bermakna satu dependency untuk melaksanakan semula perkara yang
+  sudah ada. Ada test untuk keutamaan itu.
+- **`--env-file` TIDAK boleh dipakai di sini.** Node menolaknya dalam
+  `NODE_OPTIONS` (sekatan keselamatan), dan `drizzle-kit` dilancarkan sebagai
+  bin, bukan sebagai `node`. Jadi tiada jalan melalui skrip npm sahaja —
+  pemuatan mesti berlaku di dalam `drizzle.config.ts`.
+- **Config menyemak argv untuk tahu sama ada arahan itu menyambung.**
+  `drizzle.config.ts` dimuatkan untuk **setiap** arahan drizzle-kit, termasuk
+  `generate` yang tidak menyambung dan mesti kekal berjalan tanpa
+  `DATABASE_URL` (kriteria A2). Jadi `drizzleKitCommandNeedsDatabase(argv)`
+  menyenaraikan `push`/`pull`/`studio`/`migrate` sahaja, dan ia **gagal
+  terbuka**: argv yang tidak dikenali dianggap tidak perlu DB. Kesan paling
+  buruk kalau drizzle-kit tambah arahan baharu ialah mesej ralat mereka
+  sendiri, bukan `generate` yang patah.
+- **Rentetan kosong dikira sebagai tiada.** `DATABASE_URL=` dalam
+  `.env.local` yang separuh diisi ialah bentuk asal bug ini. `requireEnv`
+  menolak rentetan kosong dan ruang kosong.
+- **Satu mesej ralat, satu tempat.** `requireDatabaseUrl` berpindah ke
+  `lib/env.ts`; `lib/db/index.ts` mengeksport semula. Dua mesej berbeza untuk
+  pembolehubah yang sama adalah bagaimana seseorang akhirnya dapat nasihat
+  yang bercanggah.
+Nota:
+- **Sifar pakej baharu.** `package.json` tidak berubah sama sekali.
+- Komen dalam `drizzle.config.ts` lama sudah mendakwa "`db:push` … fails with
+  a readable error when the variable is missing". Itu tidak benar — komen itu
+  menerangkan niat, bukan kod. Sekarang ia benar. Berhati-hati dengan komen
+  yang mendakwa tingkah laku tanpa test.
+- Disemak sendiri tanpa kelayakan sebenar, keempat-empat kriteria:
+  (1) `db:generate` tanpa `DATABASE_URL` → berjaya, "No schema changes";
+  (2) `db:push` tanpa fail dan tanpa pembolehubah → ralat tiga baris yang
+  menamakan fail yang dicari dan pembetulannya; (3) `.env.local` dengan
+  `DATABASE_URL=` kosong → ralat yang sama, bukan `url: ''`;
+  (4) `db:push` dan `db:studio` dengan url palsu dalam `.env.local` → kedua-dua
+  melepasi semakan dan **mencuba menyambung**, iaitu buktinya fail itu dibaca.
+  `npm run verify` hijau, `npm run build` berjaya dengan `/` masih statik.
+- **Tiada `db:push` dijalankan terhadap Neon sebenar.** Itu masih A2b dan ia
+  bertanda 🔴 — ia perlu kelayakan Aqeef.
+- `.env.local` ujian dibuang selepas semakan; ia dalam `.gitignore` juga.
+- A4 (renderer kad) **tidak** disentuh dan kekal `[ ]` — satu task satu sesi.
+  Ia masih task seterusnya, dan masih tidak perlu DB.
 
 ## 2026-10-05 — A3 Skema kad + taip tema
 PR: https://github.com/aqeeflew/naeqah/pull/4

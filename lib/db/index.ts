@@ -7,10 +7,15 @@
  *
  * The connection is created on first use so that `next build` — and every
  * unit test — works without `DATABASE_URL` set.
+ *
+ * `next` loads `.env.local` on its own, so nothing here has to. A plain-node
+ * script that imports this module does not get that for free and must call
+ * `loadEnvFiles()` from `lib/env.ts` first (see that file for why).
  */
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 
+import { requireDatabaseUrl } from '../env';
 import * as schema from './schema';
 
 export * from './schema';
@@ -22,16 +27,12 @@ function createDb(connectionString: string) {
   return drizzle(neon(connectionString), { schema });
 }
 
-/** Throws a readable error instead of a driver stack trace. */
-export function requireDatabaseUrl(): string {
-  const url = process.env.DATABASE_URL;
-  if (!url) {
-    throw new Error(
-      'DATABASE_URL is not set. Copy .env.example to .env.local and fill it in.',
-    );
-  }
-  return url;
-}
+/**
+ * Re-exported so callers of this module keep one import. The message lives in
+ * `lib/env.ts` so the app and `drizzle.config.ts` cannot drift into telling a
+ * developer two different things about the same missing variable.
+ */
+export { requireDatabaseUrl };
 
 let cached: Database | undefined;
 
