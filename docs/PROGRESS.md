@@ -9,7 +9,7 @@ Format entri (terbaru di atas):
 
 ```
 ## YYYY-MM-DD — <ID task> <tajuk>
-PR: https://github.com/aqeeflew/naeqah/pull/3
+PR: <pautan>
 Apa yang berubah: <2–3 baris>
 Keputusan yang diambil: <apa-apa yang sesi akan datang perlu tahu>
 Nota: <apa yang mengejutkan, apa yang rapuh>
