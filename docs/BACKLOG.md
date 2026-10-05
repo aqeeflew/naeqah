@@ -51,6 +51,19 @@ Perlu `DATABASE_URL` dari P2. Jalankan `npm run db:push` pada DB kosong dan
 sahkan setiap jadual terbina seperti yang dijangka. Kalau ada beza, betulkan
 skema dalam A2 dan jana semula migrasi.
 
+### [x] A2c — Betulkan pemuatan DATABASE_URL untuk drizzle-kit
+`drizzle.config.ts` membaca `process.env.DATABASE_URL`, tetapi tiada apa-apa
+memuatkan `.env.local` ke dalam `process.env` untuk drizzle-kit. Next.js
+memuatkannya sendiri; drizzle-kit ialah CLI berasingan dan tidak. Akibatnya
+`npm run db:push` gagal dengan `[x] url: ''` walaupun `.env.local` betul —
+ini menyekat A2b sepenuhnya.
+
+**Siap bila:** `npm run db:push` dan `npm run db:studio` membaca
+`DATABASE_URL` daripada `.env.local` tanpa langkah manual; `npm run
+db:generate` masih berjalan tanpa `DATABASE_URL`; ralat yang boleh dibaca
+bila pembolehubah itu betul-betul tiada, bukan rentetan kosong;
+`npm run verify` hijau; `.env.example` dikemas kini.
+
 ### [x] A3 — Skema kad + taip tema
 Tulis `lib/card-schema.ts` (bentuk data majlis: nama pengantin, nama ibu bapa,
 tarikh, masa, tempat, koordinat, atur cara, doa, gambar) dan
