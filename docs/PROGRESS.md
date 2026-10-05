@@ -28,11 +28,90 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
   pernah dijalankan terhadap Postgres sebenar. Aqeef perlu buka akaun Neon,
   ambil `DATABASE_URL`, dan letak dalam `.env.local`. Selepas itu `npm run
   db:push` boleh dijalankan dan A2b disahkan. Ini **tidak** menyekat A3/A4 —
-  kedua-duanya kerja TypeScript tulen tanpa DB.
+  kedua-duanya kerja TypeScript tulen tanpa DB. A3 sudah siap tanpa DB; A4
+  seterusnya, juga tanpa DB.
 
 ---
 
 ## Log
+
+## 2026-10-05 — A3 Skema kad + taip tema
+PR: https://github.com/aqeeflew/naeqah/pull/4
+Apa yang berubah: tambah `zod` sebagai dependency pengeluaran, tulis
+`lib/card-schema.ts` (data majlis: pengantin, ibu bapa, tarikh, masa, tempat,
+koordinat, atur cara, doa, gambar, hubungi) dan `lib/theme-schema.ts` (palet,
+pasangan font, susun atur, latar). 198 test hijau, termasuk 150 test baharu.
+Keputusan yang diambil:
+- **Dua fail, dua tanggungjawab, dan skema saling menolak kunci satu sama
+  lain.** Semua objek ialah `z.strictObject`, jadi `cardDataSchema` menolak
+  `palette`/`fonts`/`layout`/`background` dan `themeSchema` menolak
+  `couple`/`event`/`venue`. Ada test untuk kedua-dua arah. Inilah penguatkuasaan
+  mesin bagi "template ialah data, bukan kod" — kalau seseorang mula menyelit
+  gaya ke dalam data kad, test merah.
+- **`cardSchema` dan `cardDataSchema` ialah dua eksport berbeza.** Zod menolak
+  `.partial()` pada objek yang membawa refinement, dan editor A7 perlu bentuk
+  partial untuk autosave draf. Jadi `cardSchema` ialah objek tulen, dan
+  `cardDataSchema = cardSchema.check(...)` menambah peraturan silang-medan
+  (tarikh akhir RSVP tidak boleh selepas majlis; atur cara mesti menaik).
+  **Parse dengan `cardDataSchema`**; guna `cardSchema` hanya untuk mengarang
+  borang.
+- **Mesej validasi dalam Bahasa Malaysia**, nama medan dalam English. Mesej itu
+  dipaparkan terus dalam editor (A7 "Siap bila"), jadi ia bukan teks dalaman.
+  Nilai domain yang pereka atau tetamu lihat — id seksyen, `host` — BM, ikut
+  enum A2.
+- **Koordinat opsional di setiap tempat.** B7 mesti bina pautan Maps/Waze dari
+  alamat bertulis sahaja; ada test yang menegaskan `venue` sah tanpa koordinat.
+  Julat koordinat global (-90..90, -180..180), bukan dikurung ke Malaysia.
+- **Nombor telefon disimpan seperti yang ditaip.** "012-345 6789" kekal begitu.
+  Menormalkan ke E.164 bermakna meneka kod negara yang pengantin tidak beri.
+- **Tarikh ialah string `YYYY-MM-DD`, disemak terhadap kalendar sebenar.**
+  `Date.parse('2027-02-31')` **tidak** gagal — JS menggulungnya ke 3 Mac. Jadi
+  `isRealCalendarDate()` membandingkan komponen yang diparse semula. Jangan
+  ganti dengan `Date.parse` atau `z.iso.date()` tanpa menyemak perkara ini.
+- **`venue.state` ialah string bebas, bukan enum 13 negeri.** Kad untuk majlis
+  di luar negara mesti tetap sah. Poskod pula ketat lima digit.
+- **`background` ialah `z.discriminatedUnion('kind', …)`** dengan empat varian
+  (`warna`/`gradien`/`imej`/`corak`), bukan himpunan medan opsional — satu tema
+  tidak boleh mengisytiharkan gradien *dan* imej lalu menyerahkan pilihan
+  kepada renderer.
+- **Palet ada lapan slot dan semuanya wajib** (termasuk `onPrimary`). Tema yang
+  meninggalkan satu slot memaksa renderer mencipta fallback, dan fallback
+  per-template itulah yang reka bentuk ini cuba halang.
+- **`layout.sections` ialah kontrak A4.** Senarai id seksyen BM, mesti unik,
+  mesti bermula dengan `pembuka`, dan mesti mengandungi `rsvp` — kad tanpa
+  jalan untuk menjawab ialah perkara yang pengantin bayar untuk dapatkan.
+  A4 membaca susunan ini; jangan hardcode susunan dalam renderer.
+- **`themeSchema` ada `version: z.literal(1)`.** Tema ialah JSON tulis-tangan;
+  versi itulah satu-satunya cara sesi akan datang tahu satu fail mendahului
+  perubahan skema. Naikkan ke 2 hanya bersama kod migrasi.
+- **Tema TIDAK mengandungi `slug`, nama galeri atau tier** — ketiga-tiganya
+  lajur pada jadual `templates` (A2). Menduplikasi mereka dalam JSON menjemput
+  dua sumber kebenaran yang terpesong.
+- `showBranding` eksplisit dalam tema, bukan disimpulkan daripada tier. Baris
+  "Dibuat dengan Naeqah" ialah saluran pertumbuhan utama (SPEC.md), jadi ia
+  patut kelihatan dalam fail yang pereka buka.
+Nota:
+- **`zod` sudah ada dalam `package-lock.json`** sebagai dependency dev
+  transitif (di bawah `drizzle-kit`). `npm install zod` hanya menaikkannya ke
+  dependency langsung pada versi yang sama (4.6.5) — **sifar pakej baharu, sifar
+  versi berubah**. Diff lock ialah dua baris.
+- Zod 4, bukan 3: guna `{ error: '…' }` bukan `{ message: '…' }`, dan
+  `.check((ctx) => ctx.issues.push(…))` bukan `.superRefine()`.
+- `lib/theme-schema.test.ts` mengimbas `lib/themes/*.json` dan mengesahkan
+  setiap fail. Direktori itu masih kosong, jadi test itu lulus secara remeh
+  **sekarang** — ia menjadi pengawal sebenar sebaik A5 meletakkan
+  `klasik.json` di sana. Itulah sebab pereka boleh tambah template tanpa
+  menyentuh TypeScript.
+- Had saiz dipilih supaya kad kekal pantas pada data mudah alih: galeri 12
+  gambar, atur cara 20 baris, 4 nombor hubungi, 4 berat font per keluarga.
+  Angka itu boleh dirunding; ia bukan fakta luar.
+- Disemak sendiri: `npm run verify` hijau (198 test), `npm run build` berjaya
+  dengan `/` masih prerender statik, `npx prettier --check .` bersih. Lima
+  probe adversarial dijalankan berasingan (tarikh `+2027-03-14`, baris alamat
+  ruang kosong sahaja, masa tamat sama dengan masa mula, dua baris atur cara
+  pada masa sama); dua yang bernilai difoldkan ke dalam suite.
+- Task seterusnya ialah A4 (renderer kad). Ia membaca kedua-dua skema ini dan
+  tidak perlu DB — boleh jalan walaupun A2b masih tersekat.
 
 ## 2026-10-05 — A2 Skema pangkalan data
 PR: https://github.com/aqeeflew/naeqah/pull/3
