@@ -51,7 +51,7 @@ Perlu `DATABASE_URL` dari P2. Jalankan `npm run db:push` pada DB kosong dan
 sahkan setiap jadual terbina seperti yang dijangka. Kalau ada beza, betulkan
 skema dalam A2 dan jana semula migrasi.
 
-### [ ] A3 — Skema kad + taip tema
+### [x] A3 — Skema kad + taip tema
 Tulis `lib/card-schema.ts` (bentuk data majlis: nama pengantin, nama ibu bapa,
 tarikh, masa, tempat, koordinat, atur cara, doa, gambar) dan
 `lib/theme-schema.ts` (palet, font, susun atur, latar). Guna Zod untuk validasi.
