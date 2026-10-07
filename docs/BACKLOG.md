@@ -95,13 +95,20 @@ kad penuh. Tiada logik khusus-template di mana-mana.
 render dua konfigurasi tema berbeza dengan data yang sama dan menghasilkan
 output berbeza; tiada `if (template === ...)` dalam kod.
 
-### [ ] A5 — Tema pertama + seed
+### [x] A5 — Tema pertama + seed
 Cipta `lib/themes/klasik.json` (tema asas: palet neutral, font serif, susun atur
 mudah) dan skrip seed yang memasukkan satu template dan satu kad contoh.
 Tema ini fungsian, bukan hasil reka bentuk akhir — A5b akan menggantikannya.
 
 **Siap bila:** `npm run db:seed` berjaya; kad contoh dirender di
 `/kad/contoh-aqeef-nurul`; halaman itu dijana statik, bukan SSR.
+
+**Ditulis sepenuhnya 7 Oktober 2026; satu kriteria belum disahkan.** Tema,
+skrip seed dan laluan statik siap, dan laluan itu terbukti prerender ke HTML
+sebenar (lihat `PROGRESS.md`). **`npm run db:seed` belum pernah berjalan
+terhadap pangkalan data sebenar** — sesi autonomous tiada `DATABASE_URL`, dan
+egress sesi menyekat hos Neon walaupun kuncinya ada. Aqeef perlu menjalankan
+`npm run db:seed` sendiri sekali untuk menutup kriteria pertama.
 
 ### [ ] 🔴 A5b — Reka bentuk 6 template sebenar
 Keputusan estetik — perlu pereka manusia. Sesi autonomous tidak boleh buat ini.

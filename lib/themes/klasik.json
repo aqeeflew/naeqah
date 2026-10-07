@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "name": "Klasik",
+  "palette": {
+    "background": "#faf7f2",
+    "surface": "#ffffff",
+    "text": "#2c2a26",
+    "muted": "#7a7368",
+    "primary": "#3f3a33",
+    "accent": "#b08d57",
+    "border": "#e3dcd1",
+    "onPrimary": "#ffffff"
+  },
+  "fonts": {
+    "heading": {
+      "family": "ui-serif, Georgia, Cambria, 'Times New Roman', serif",
+      "weights": [400, 700]
+    },
+    "body": {
+      "family": "ui-serif, Georgia, Cambria, 'Times New Roman', serif",
+      "weights": [400, 700]
+    },
+    "display": {
+      "family": "ui-serif, Georgia, Cambria, 'Times New Roman', serif",
+      "weights": [400],
+      "letterSpacing": 0.06
+    }
+  },
+  "layout": {
+    "cover": "tengah",
+    "sections": [
+      "pembuka",
+      "pengantin",
+      "tarikh",
+      "lokasi",
+      "aturcara",
+      "galeri",
+      "doa",
+      "hubungi",
+      "rsvp",
+      "ucapan"
+    ],
+    "corners": "bulat",
+    "divider": "garis",
+    "textScale": 1,
+    "centerBody": true
+  },
+  "background": {
+    "kind": "warna",
+    "color": "#faf7f2"
+  },
+  "showBranding": true
+}

@@ -105,12 +105,36 @@ export function loadEnvFiles(
 }
 
 /**
+ * The one definition of "this variable is set".
+ *
+ * Stated once so `hasEnv` and `requireEnv` cannot drift: `DATABASE_URL=` in a
+ * half-filled `.env.local` is a mistake, not a deliberate empty value, and
+ * letting it through is what produced the original `[x] url: ''`.
+ */
+function isUsableValue(value: string | undefined): value is string {
+  return value !== undefined && value.trim() !== '';
+}
+
+/**
+ * Is a variable set to something usable?
+ *
+ * `requireEnv` throws on exactly what this returns `false` for. This exists
+ * for the callers that must *branch* instead of throwing — the chief one being
+ * `generateStaticParams` in `app/kad/[slug]/`, which has to leave `next build`
+ * green on a machine that has never had a database.
+ */
+export function hasEnv(
+  name: string,
+  env: Record<string, string | undefined> = process.env,
+): boolean {
+  return isUsableValue(env[name]);
+}
+
+/**
  * Read a variable that the caller cannot run without, or throw an error that
  * says what to do about it.
  *
- * An empty string counts as missing: `DATABASE_URL=` in a half-filled
- * `.env.local` is a mistake, not a deliberate empty value, and letting it
- * through is what produced the original `[x] url: ''`.
+ * An empty string counts as missing — see `isUsableValue` above.
  */
 export function requireEnv(
   name: string,
@@ -118,7 +142,7 @@ export function requireEnv(
 ): string {
   const value = env[name];
 
-  if (value === undefined || value.trim() === '') {
+  if (!isUsableValue(value)) {
     throw new Error(
       `${name} is not set.\n` +
         `Searched: ${ENV_FILES.join(', ')} (relative to the project root), ` +
