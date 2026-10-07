@@ -87,7 +87,7 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 ## Log
 
 ## 2026-10-07 — OPS1 Langkah 0 jangan tulis ke `main`
-PR: <PR_URL>
+PR: https://github.com/aqeeflew/naeqah/pull/8
 Apa yang berubah: `CLAUDE.md` sahaja (protokol), plus bahagian baharu
 `## Operasi` dalam `BACKLOG.md` dan entri ini. **Sifar perubahan pada kod
 aplikasi** — tiada fail dalam `app/`, `components/`, `lib/` atau `scripts/`
@@ -132,9 +132,23 @@ Nota:
 - **PR ini dibina atas branch A5, bukan atas `main`.** Kalau ia dibina atas
   `main`, ia akan menyelit entri `## Log` di tempat yang sama seperti PR #7
   (A5) dan **menghasilkan konflik yang OPS1 wujud untuk menghapuskan** — pada
-  pagi yang sama Aqeef minta ia dibaiki. Dengan base `task/A5-tema-pertama-seed`,
-  kedua-dua PR bersih; GitHub akan menyasar semula PR ini ke `main` secara
-  automatik sebaik PR #7 di-merge. **Merge PR #7 dahulu, kemudian PR ini.**
+  pagi yang sama Aqeef minta ia dibaiki. Jadi ia ditumpuk: base PR ini ialah
+  `task/A5-tema-pertama-seed`, dan kedua-dua PR bersih.
+- **PELAJARAN: penyasaran semula automatik TIDAK berlaku, dan sebabnya penting.**
+  Sesi ini menjangka GitHub akan menyasar semula PR #8 ke `main` sendiri sebaik
+  PR #7 di-merge. Ia tidak. Dua sebab bergabung:
+  1. **PR #7 di-merge secara squash.** Commit A5 yang branch ini dibina atas
+     (`3603b48`) **bukan** nenek moyang `main` — `main` mendapat satu commit
+     baharu (`ba9037f`) dengan kandungan yang sama tetapi SHA yang berbeza.
+  2. **Branch `task/A5-tema-pertama-seed` tidak dipadam semasa merge.** GitHub
+     hanya menyasar semula PR bertumpuk apabila branch base dipadam.
+  Akibatnya PR #8 kekal menunjuk ke branch yang sudah di-merge: butang Merge
+  kelihatan hijau, tetapi menekannya akan merge ke branch itu, **bukan ke
+  `main`**. Pembetulan: merge `origin/main` ke dalam branch ini (kandungan A5
+  sama pada kedua-dua belah, jadi ia selesai bersih dan diff tinggal OPS1
+  sahaja), kemudian tukar base PR kepada `main` dengan tangan.
+  **Untuk PR bertumpuk akan datang: jangan harap penyasaran semula automatik
+  kalau repo guna squash merge.** Semak base PR selepas setiap merge.
 - **Satu bahagian pembetulan ini di luar jangkauan sesi autonomous.** Prompt
   task berjadual (disimpan dalam tetapan Claude, bukan dalam repo) masih
   mengandungi baris: *"Jangan push terus ke main kecuali untuk nota PROGRESS.md
@@ -152,11 +166,12 @@ Nota:
 - Disemak sendiri: `npm run verify` hijau (356 test, sama seperti A5 — tiada
   test baharu kerana tiada kod berubah), `git diff` menunjukkan hanya tiga fail
   `.md`.
-- **Task seterusnya ialah A6 (galeri template)**, selepas kedua-dua PR di-merge
-  dan `npm run db:seed` dijalankan sekali. Lihat `## Tersekat`.
+- **Task seterusnya ialah A6 (galeri template)**, selepas PR ini di-merge dan
+  `npm run db:seed` dijalankan sekali. PR #7 (A5) di-merge pada 7 Oktober
+  08:11 UTC. Lihat `## Tersekat`.
 
 ## 2026-10-07 — A5 Tema pertama + seed
-PR: <PR_URL>
+PR: https://github.com/aqeeflew/naeqah/pull/7
 Apa yang berubah: tambah `lib/themes/klasik.json` (tema asas pertama) dan
 `lib/themes/index.ts` (katalog tema), `lib/seed-data.ts` (fixture) dengan
 `scripts/seed.ts` dan skrip `db:seed`, `lib/card-page.ts` (baca kad terbit
