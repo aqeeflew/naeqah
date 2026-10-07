@@ -87,7 +87,8 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 ## Log
 
 ## 2026-10-07 — OPS1 Langkah 0 jangan tulis ke `main`
-PR: https://github.com/aqeeflew/naeqah/pull/8
+PR: https://github.com/aqeeflew/naeqah/pull/8 (di-merge ke branch yang salah),
+kemudian https://github.com/aqeeflew/naeqah/pull/9 ke `main`
 Apa yang berubah: `CLAUDE.md` sahaja (protokol), plus bahagian baharu
 `## Operasi` dalam `BACKLOG.md` dan entri ini. **Sifar perubahan pada kod
 aplikasi** — tiada fail dalam `app/`, `components/`, `lib/` atau `scripts/`
@@ -143,12 +144,23 @@ Nota:
   2. **Branch `task/A5-tema-pertama-seed` tidak dipadam semasa merge.** GitHub
      hanya menyasar semula PR bertumpuk apabila branch base dipadam.
   Akibatnya PR #8 kekal menunjuk ke branch yang sudah di-merge: butang Merge
-  kelihatan hijau, tetapi menekannya akan merge ke branch itu, **bukan ke
-  `main`**. Pembetulan: merge `origin/main` ke dalam branch ini (kandungan A5
-  sama pada kedua-dua belah, jadi ia selesai bersih dan diff tinggal OPS1
-  sahaja), kemudian tukar base PR kepada `main` dengan tangan.
-  **Untuk PR bertumpuk akan datang: jangan harap penyasaran semula automatik
-  kalau repo guna squash merge.** Semak base PR selepas setiap merge.
+  kelihatan hijau, tetapi menekannya merge ke branch itu, **bukan ke `main`**.
+- **Dan itulah yang berlaku.** PR #7 di-merge 08:11 UTC; PR #8 di-merge
+  08:12 UTC, satu minit kemudian — sebelum sesi ini sempat menukar base-nya.
+  Jadi commit OPS1 mendarat pada `task/A5-tema-pertama-seed`, satu branch yang
+  sudah mati, dan **tidak pernah sampai ke `main`**. Kedua-dua PR menunjukkan
+  "Merged" dengan lencana ungu, jadi tiada apa-apa kelihatan salah. Pembetulan:
+  merge `origin/main` ke dalam branch OPS1 (kandungan A5 sama pada kedua-dua
+  belah, jadi konflik `PROGRESS.md` selesai bersih dan diff tinggal OPS1
+  sahaja), kemudian buka PR baharu terus ke `main` — PR yang sudah di-merge
+  tidak boleh ditukar base atau dibuka semula.
+- **Peraturan untuk PR bertumpuk akan datang.** Repo ini guna **squash merge**,
+  jadi: (a) jangan harap GitHub menyasar semula PR bertumpuk secara automatik;
+  (b) selepas base PR di-merge, **semak dan betulkan base PR anak SEBELUM**
+  sesiapa menekan Merge padanya — tetingkap antara dua merge boleh sesingkat
+  satu minit; (c) lebih selamat lagi: elak menumpuk. Kalau dua task mesti
+  berjalan serentak, cari cara supaya keduanya tidak menyentuh fail yang sama
+  — itu masalah yang OPS1 sendiri cuba selesaikan.
 - **Satu bahagian pembetulan ini di luar jangkauan sesi autonomous.** Prompt
   task berjadual (disimpan dalam tetapan Claude, bukan dalam repo) masih
   mengandungi baris: *"Jangan push terus ke main kecuali untuk nota PROGRESS.md
