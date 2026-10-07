@@ -95,7 +95,7 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 ## Log
 
 ## 2026-10-07 — A6 Galeri template
-PR: https://github.com/aqeeflew/naeqah/pull/PENDING
+PR: https://github.com/aqeeflew/naeqah/pull/10
 Apa yang berubah: `lib/template-gallery.ts` (lapisan query + `TIER_LABELS`),
 `components/gallery/` (miniatur tema, petak galeri, `index.ts`), laluan
 `/templates` dan `/templates/[slug]`, satu pautan ke galeri pada halaman utama,
