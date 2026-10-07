@@ -72,6 +72,28 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 
 ## Log
 
+## 2026-10-06 — Sesi dilangkau (PR #6 masih belum di-merge)
+Sesi kedua berturut-turut dilangkau mengikut protokol langkah 0: PR #6
+(task A4 — renderer kad) masih terbuka. Disemak semula hari ini: Vercel
+hijau, `mergeable_state` bersih, tiada semakan dan tiada komen yang belum
+dijawab — tiada apa-apa untuk dibetulkan di sana. Task seterusnya ialah A5
+(tema pertama + seed), yang mengimport terus `components/card/` dan hanya
+wujud dalam PR #6; memulakannya atas `main` sekarang menjamin konflik.
+**Merge PR #6 ialah satu-satunya perkara yang membuka sesi seterusnya.**
+Nota: setiap sesi yang dilangkau menambah satu entri di sini, jadi
+`docs/PROGRESS.md` pada `main` makin menjauhi versi dalam PR #6 — jangkakan
+konflik dalam fail ini semasa merge, dan selesaikan dengan menyimpan
+kedua-dua entri, terbaru di atas.
+
+## 2026-10-05 — Sesi dilangkau (PR #6 belum di-merge)
+Sesi dilangkau mengikut protokol langkah 0: PR #6 (task A4 — renderer kad,
+branch `task/A4-card-renderer`) masih terbuka dan menunggu semakan Aqeef.
+Tiada task baharu dimulakan, kerana `main` belum mengandungi
+`components/card/` dan task seterusnya (A5 — tema + seed) membina terus atas
+renderer itu; dua PR akan berlanggar. Semakan keadaan PR: Vercel hijau
+(deployment selesai), tiada semakan dan tiada komen yang belum dijawab —
+tiada apa-apa untuk dibetulkan di sana. PR #6 juga menanda A2b `[x]` atas
+laporan Aqeef. Merge PR #6 untuk membuka sesi seterusnya.
 ## 2026-10-05 — A4 Renderer kad
 PR: https://github.com/aqeeflew/naeqah/pull/6
 Apa yang berubah: tambah `components/card/` — `card-renderer.tsx` (akar),
