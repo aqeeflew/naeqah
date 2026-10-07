@@ -36,41 +36,190 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
   ia melakukan `git clone`, dan `.env.local` ada dalam `.gitignore`, jadi
   **tiada `DATABASE_URL` dalam bekas itu**. Pangkalan data Aqeef hidup di
   Neon, tetapi sesi autonomous tidak ada kuncinya.
-  - Akibatnya untuk **A5**: `lib/themes/klasik.json` dan skrip `db:seed` boleh
-    ditulis sepenuhnya tanpa DB, dan `npm run verify` akan hijau. Yang **tidak**
-    boleh dibuktikan ialah kriteria "`npm run db:seed` berjaya" dan "kad contoh
-    dirender di `/kad/contoh-aqeef-nurul`". Sesi seterusnya patut menulis A5
-    sepenuhnya, kemudian menyatakan dengan jujur bahawa seed belum pernah
-    dijalankan — sama seperti A2 menulis skema tanpa menjalankan `db:push`.
-    Jangan berhenti tanpa menulis apa-apa; jangan juga mendakwa seed berjaya.
+  - **A5 SELESAI DITULIS (7 Oktober), satu kriteria menunggu Aqeef.** Tema,
+    seed dan laluan statik siap. `npm run db:seed` **belum pernah berjalan
+    terhadap DB sebenar** — Aqeef perlu menjalankannya sekali, kemudian
+    `npm run build`. Kriteria "kad contoh dirender di
+    `/kad/contoh-aqeef-nurul`" **sudah** dibuktikan, melalui probe build
+    dengan fixture dalam ingatan; lihat entri A5 dalam `## Log`.
   - Akibatnya untuk **A6 dan A7**: kedua-duanya membaca dan menulis DB semasa
     request, jadi ia perlu kunci sebenar untuk diuji betul-betul.
-  - **Apa yang Aqeef boleh buat kalau mahu sesi autonomous mencapai DB:**
-    sediakan `DATABASE_URL` kepada persekitaran sesi berjadual itu (sebagai
-    rahsia persekitaran, bukan fail yang dicommit). Gunakan **branch Neon
-    berasingan untuk sesi autonomous**, bukan branch pengeluaran — supaya
-    `db:push` atau seed yang silap tidak menyentuh data sebenar. Kalau Aqeef
-    lebih suka tidak memberi kunci langsung, itu pilihan yang munasabah; cuma
-    maknanya A5–A7 akan sampai sebagai kod yang belum dijalankan terhadap DB,
-    dan Aqeef yang menjalankannya semasa semakan.
+  - **Apa yang Aqeef boleh buat kalau mahu sesi autonomous mencapai DB —
+    DIKEMAS KINI 7 Oktober, kunci sahaja tidak cukup.** Perlu **dua** perkara,
+    bukan satu:
+    1. `DATABASE_URL` kepada persekitaran sesi berjadual (rahsia persekitaran,
+       bukan fail yang dicommit). Gunakan **branch Neon berasingan untuk sesi
+       autonomous**, bukan branch pengeluaran — supaya `db:push` atau seed yang
+       silap tidak menyentuh data sebenar.
+    2. **`*.neon.tech` dalam allowlist egress rangkaian** sesi itu. Sesi A5
+       mengujinya: dengan URL Neon dalam `.env.local`, percubaan sambungan
+       dipulangkan `HTTP status 403: Host not in allowlist:
+       api.ap-southeast-1.aws.neon.tech`. Driver `neon-http` bercakap HTTPS
+       kepada hos itu, jadi tanpa allowlist, kunci yang sah pun tidak
+       menyambung.
+    Kalau Aqeef lebih suka tidak membuka salah satu, itu pilihan yang
+    munasabah; cuma maknanya A5–A7 akan sampai sebagai kod yang belum
+    dijalankan terhadap DB, dan Aqeef yang menjalankannya semasa semakan.
 - **P3 (Vercel) selesai — diperhatikan terus pada 5 Oktober.** Bot Vercel
   mengulas pada PR #6 dan deployment preview sampai ke Ready, jadi sambungan
   repo → Vercel wujud. **P2 ditanda selesai secara simpulan**, kerana A2b
   tidak mungkin berjaya tanpanya. P1 (SSM) masih terbuka dan ia yang menyekat
   B3a → B4/B5.
-- **Preview Vercel belum berguna untuk melihat kad.** Satu-satunya laluan dalam
-  app ialah `/`, jadi preview PR tidak memaparkan kad walaupun renderer sudah
-  ada. Itu bukan pepijat: laluan kad ialah A5 (`/kad/contoh-aqeef-nurul`) dan
-  B6. Selepas A5 di-merge, preview setiap PR jadi cara paling pantas untuk
-  Aqeef melihat perubahan tema dengan matanya sendiri — itu nilai sebenar
-  P3 untuk projek ini, dan ia bermula pada A5.
-- **Fasa A yang tinggal selepas A4:** A5 (tema pertama + seed), A5b 🔴 (reka
-  bentuk 6 template — perlu pereka manusia), A6 (galeri), A7 (editor), A8
-  (susun atur editor mobile).
+- **Preview Vercel: laluan kad kini wujud, tetapi ia kosong sehingga seed
+  dijalankan.** Sebelum ini `/` ialah satu-satunya laluan. Selepas A5,
+  `/kad/[slug]` ada — tetapi ia dijana daripada baris `cards` yang
+  **diterbitkan**, jadi preview hanya memaparkan kad kalau (a) projek Vercel
+  ada `DATABASE_URL` dan (b) `npm run db:seed` sudah dijalankan sekali
+  terhadap DB itu. Kalau salah satu tiada, build tetap hijau dan jadual
+  laluan hanya menunjukkan `/kad/[slug]` tanpa satu pun halaman di bawahnya —
+  itu bukan pepijat, itu amaran `[kad] DATABASE_URL is not set` dalam log
+  build. Sebaik kedua-duanya ada, preview setiap PR jadi cara paling pantas
+  untuk Aqeef melihat perubahan tema dengan matanya sendiri — itu nilai
+  sebenar P3 untuk projek ini.
+- **Fasa A yang tinggal selepas A5:** A5b 🔴 (reka bentuk 6 template — perlu
+  pereka manusia), A6 (galeri), A7 (editor), A8 (susun atur editor mobile).
+  **A6 membaca `templates` terbit daripada DB**, jadi ia bergantung pada seed
+  A5 benar-benar dijalankan sekali — kalau tidak, galeri kosong dan sesi A6
+  tidak boleh membuktikan apa-apa.
 
 ---
 
 ## Log
+
+## 2026-10-07 — A5 Tema pertama + seed
+PR: <PR_URL>
+Apa yang berubah: tambah `lib/themes/klasik.json` (tema asas pertama) dan
+`lib/themes/index.ts` (katalog tema), `lib/seed-data.ts` (fixture) dengan
+`scripts/seed.ts` dan skrip `db:seed`, `lib/card-page.ts` (baca kad terbit
+pada waktu build), dan laluan `app/kad/[slug]/page.tsx` yang prerender.
+356 test hijau, termasuk 44 test baharu.
+Keputusan yang diambil:
+- **Tema dimuat melalui import statik, bukan `fs`.** `templates.theme_file`
+  menyimpan `lib/themes/klasik.json`; `lib/themes/index.ts` memetakan string
+  itu kepada tema yang sudah diparse. Dua sebab: (1) halaman kad tidak boleh
+  bergantung pada repo wujud di sebelah fungsi yang berjalan, (2) fail tema
+  yang rosak menggagalkan **build**, bukan kad pada pagi majlis. Harganya ialah
+  satu baris dalam `THEME_SOURCES` setiap kali tema baharu ditambah — bundler
+  tidak boleh menemui import daripada string pangkalan data. **Ada test yang
+  gagal kalau satu fail `.json` dalam `lib/themes/` tiada dalam peta itu**,
+  jadi langkah manual itu tidak boleh terlupa. A5b akan menambah enam baris.
+- **`loadTheme` ketat pada ejaan kunci.** `./lib/themes/klasik.json` ditolak.
+  Satu ejaan kanonik bermakna baris `templates` boleh disemak terhadap
+  `themeFiles`, dan panel admin (C3) patut menawarkan senarai itu, bukan medan
+  teks bebas.
+- **klasik guna font sistem sahaja — sifar permintaan rangkaian.** Tema
+  "fungsian" tidak perlu webfont, dan kad mesti buka atas data mudah alih pagi
+  majlis walaupun `fonts.googleapis.com` tidak dapat dicapai. Taipografi
+  sebenar datang dengan A5b. `googleFontsHref()` tetap disambung dalam laluan
+  dan **sudah diuji dengan build sebenar** (lihat Nota) supaya tema A5b yang
+  guna Google Fonts terus berfungsi.
+- **klasik menyenaraikan kesepuluh-sepuluh seksyen.** `visibleSections()`
+  membuang yang kosong, jadi menyenaraikan semua bermakna pengantin yang
+  memuat naik galeri akan nampak galerinya. Menyingkatkan senarai "sebab kad
+  contoh tiada gambar" akan menyembunyikan kandungan pengantin sebenar.
+- **`dynamicParams = false`.** Ini kriteria "statik, bukan SSR" yang sebenar.
+  Tanpanya, slug yang tiada dalam build jatuh balik ke render pelayan yang
+  query Postgres pada setiap request tetamu — iaitu tepat kegagalan yang
+  keputusan seni bina 1 cuba halang. Slug tidak dikenali kini 404 (disahkan
+  terhadap pelayan sebenar).
+- **`generateStaticParams` pulang senarai kosong bila `DATABASE_URL` tiada,
+  dengan amaran, bukan ralat.** Itu keadaan normal CI dan sesi autonomous:
+  `next build` mesti kekal hijau. Tetapi **ralat query dilempar semula** —
+  deployment yang salah konfigurasi tidak boleh senyap-senyap menghantar sifar
+  kad. Dua keadaan itu berbeza dan dilayan berbeza.
+- **Tema dibaca melalui `bookings`, bukan lajur pada `cards`.** Template yang
+  dibeli ialah fakta tentang pembelian. Join bermakna template yang ditukar
+  tier atau dinamakan semula tidak meninggalkan kad terbit menunjuk ke tema
+  yang tiada sesiapa beli.
+- **`cards.expires_at` tidak ditapis.** Belum ada apa-apa yang menetapkannya
+  (B6 yang buat, daripada tier), dan menurunkan kad yang luput ialah kerja
+  waktu-terbit, bukan waktu-baca — halaman yang sudah statik tidak boleh mula
+  404 kerana satu timestamp berlalu.
+- **Seed tidak mereka satu pun nilai sebenar.** `price_sen` ialah **0**, bukan
+  angka ringgit yang kelihatan munasabah: harga belum diputuskan (`SPEC.md`)
+  dan lajur itu merekod apa yang benar-benar dicaj — tiada apa-apa dicaj. E-mel
+  guna TLD terpelihara `.test`; nombor telefon ada bahagian pelanggan
+  semua-sifar supaya tetamu yang menekannya tidak sampai kepada orang asing.
+  Ada test untuk ketiga-tiganya.
+- **Seed idempoten melalui upsert pada indeks unik yang sedia ada.** Tiada
+  indeks baharu ditambah untuk kemudahan seed: `bookings` ialah lejar pesanan
+  sebenar, jadi seed mencari booking kad itu melalui `cards.slug` dahulu dan
+  guna semula. `paid_at` kekal null — tiada bayaran berlaku, dan mereka-reka
+  timestamp untuknya akan jadi fakta palsu dalam lajur yang C1 dan C3 lapor.
+- **`tsx` dinaikkan ke devDependency langsung.** Ia **sudah** ada dalam pokok
+  (drizzle-kit dan vite kedua-duanya guna 4.23.15), jadi diff lock ialah
+  **satu baris dan sifar pakej baharu** — sama seperti `zod` dalam A3. Ia perlu
+  kerana `scripts/seed.ts` ialah TypeScript dengan alias `@/`: strip-types Node
+  tidak menyelesaikan alias mahupun import tanpa sambungan fail.
+- **`isUsableValue` dalam `lib/env.ts`** kini satu-satunya definisi "pembolehubah
+  ini ada". `hasEnv` (untuk yang perlu bercabang) dan `requireEnv` (untuk yang
+  perlu melempar) kedua-duanya membacanya, jadi peraturan rentetan-kosong A2c
+  tidak boleh terpesong antara dua tempat.
+- **`generateMetadata` menamakan pengantin, bukan app.** Pautan WhatsApp ialah
+  keseluruhan saluran pengedaran produk, jadi tajuk preview ialah
+  "Aqeef & Nurul — Jemputan Majlis". Tiada `openGraph.images`: imej kongsi
+  perlu aset, dan aset datang dengan A5b.
+Nota:
+- **Dua pakej baharu: sifar.** Diff `package-lock.json` ialah satu baris
+  (`tsx` naik ke devDependency langsung pada versi yang sama).
+- **`npm run db:seed` BELUM PERNAH berjalan terhadap pangkalan data sebenar.**
+  Ini kriteria A5 yang belum ditutup dan ia ditulis begitu dalam `BACKLOG.md`.
+  Apa yang **disahkan** tanpa kelayakan: (1) tanpa `DATABASE_URL` ia berhenti
+  dengan ralat tiga baris yang sama seperti A2c; (2) dengan `DATABASE_URL`
+  kosong, ralat yang sama, bukan rentetan kosong; (3) dengan URL Neon palsu ia
+  memuat env, menyelesaikan alias `@/`, mengimport tema JSON, **membina SQL
+  upsert yang betul** (dicetak penuh dalam output) dan cuba menyambung. Yang
+  tidak diketahui hanyalah sama ada Postgres sebenar menerima pernyataan itu.
+  Aqeef: jalankan `npm run db:seed` sekali, kemudian `npm run build`.
+- **PENEMUAN BARU — `DATABASE_URL` sahaja TIDAK cukup.** Nota `## Tersekat`
+  sebelum ini mengandaikan memberi kunci kepada sesi berjadual akan membuka
+  A5–A7. Ia tidak. Egress sesi ini melalui gateway dengan allowlist, dan hos
+  Neon tiada padanya: percubaan sambungan dipulangkan sebagai
+  `HTTP status 403: Host not in allowlist: api.ap-southeast-1.aws.neon.tech`.
+  Jadi untuk sesi autonomous mencapai DB, Aqeef perlu **dua** perkara:
+  `DATABASE_URL` (branch Neon berasingan, bukan pengeluaran) **dan**
+  `*.neon.tech` dalam tetapan egress rangkaian sesi berjadual itu. Kalau salah
+  satu tiada, A6 dan A7 akan sampai sebagai kod yang belum dijalankan juga.
+- **Laluan kad terbukti prerender, bukan hanya lulus test.** Satu probe
+  sementara menggantikan dua fungsi query dalam `lib/card-page.ts` dengan
+  fixture seed dalam ingatan, kemudian `npm run build`. Hasilnya:
+  `● /kad/contoh-aqeef-nurul` dalam jadual laluan, dan
+  `.next/server/app/kad/contoh-aqeef-nurul.html` (27 KB) mengandungi
+  "Muhammad Aqeef bin Rahman", "Sabtu, 14 Ogos 2027", "11.30 pagi",
+  "Dewan Seri Kenangan", "Dibuat dengan Naeqah", kesembilan `data-section`
+  mengikut susunan tema, dan `<title>Aqeef &amp; Nurul — Jemputan Majlis</title>`.
+  `npm run start` kemudian memulangkan **200** untuk slug itu dan **404** untuk
+  slug yang tidak dikenali — **tanpa `DATABASE_URL` dalam persekitaran
+  pelayan**, iaitu bukti terus bahawa halaman kad tidak menyentuh DB pada
+  request. Probe dibuang selepas semakan.
+- **Hoisting `<link>` font disahkan dengan probe kedua.** Tema probe diberi
+  `googleFont`, build semula, dan `<link rel="stylesheet" … data-precedence=
+  "card-fonts">` keluar **di dalam `<head>`**, bukan dalam badan. Ini
+  mengesahkan andaian A4 tentang `googleFontsHref()` sebelum A5b bergantung
+  padanya.
+- **Diukur pada 390×844 dengan Chromium sebenar terhadap halaman yang
+  dibina:** `document.scrollWidth` kekal **390**, **sifar** elemen melepasi
+  tepi kanan, kesembilan seksyen hadir.
+- **Artifak visual yang diketahui, bukan pepijat:** seksyen `ucapan` memaparkan
+  tajuk "UCAPAN" tanpa apa-apa di bawahnya. `Ucapan` ialah bekas kosong yang
+  A4 bina untuk **B9**, dan `hasContent`-nya sentiasa benar. Ia akan terisi
+  bila B9 mendarat. Pilihan lain ialah membuang `ucapan` daripada klasik
+  sekarang, tetapi itu bermakna seseorang mesti ingat menambahnya semula ke
+  **setiap** fail tema kemudian — lebih senyap dan lebih mudah terlupa. Kalau
+  Aqeef mahu ia hilang sehingga B9, tukar `hasContent` bagi `ucapan` dalam
+  `card-sections.tsx`, bukan senarai seksyen dalam tema.
+- `seedCardData` sengaja menamakan pasangan yang **berbeza** daripada
+  `placeholderCardData` (Aqeef & Nurul lawan Zulkifli & Aisyah). Kalau
+  kedua-duanya sama, halaman yang disambung ke sumber yang salah akan nampak
+  betul. Ada test untuk itu.
+- Kad seed **tiada gambar**, atas sebab yang sama seperti `placeholder-card.ts`:
+  setiap rujukan imej perlu fail dalam `public/`, dan aset berlesen datang
+  dengan A5b. Seksyen `galeri` justeru tercicir daripada output hari ini.
+- Disemak sendiri: `npm run verify` hijau (356 test), `npm run build` berjaya
+  dengan `/` masih statik, `npx prettier --check .` bersih.
+- **Task seterusnya ialah A6 (galeri template).** Ia membaca `templates` yang
+  **diterbitkan** daripada DB — jadi ia memerlukan seed A5 dijalankan, atau ia
+  akan jadi galeri kosong. Baca `## Tersekat` dahulu.
 
 ## 2026-10-06 — Sesi dilangkau (PR #6 masih belum di-merge)
 Sesi kedua berturut-turut dilangkau mengikut protokol langkah 0: PR #6
