@@ -44,6 +44,15 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
     dengan fixture dalam ingatan; lihat entri A5 dalam `## Log`.
   - Akibatnya untuk **A6 dan A7**: kedua-duanya membaca dan menulis DB semasa
     request, jadi ia perlu kunci sebenar untuk diuji betul-betul.
+  - **A6 SELESAI DITULIS (7 Oktober), satu kriteria menunggu Aqeef.** Galeri,
+    pratonton penuh dan lapisan query siap, dan query itu membaca `templates`
+    sebenar — tetapi ia **belum pernah berjalan terhadap Postgres sebenar**.
+    Yang terbukti: sifar lebar melimpah pada 390px, dua lajur pada telefon dan
+    tiga pada laptop, `<link>` font dalam `<head>`, 404 untuk slug yang tidak
+    dikenali — semuanya diukur terhadap halaman yang **dibina**, dengan probe
+    fixture dalam ingatan (lihat entri A6 dalam `## Log`). Yang tinggal ialah
+    sama ada Postgres sebenar memulangkan baris yang dijangka. Aqeef: jalankan
+    `npm run db:seed` sekali, kemudian buka `/templates`.
   - **Apa yang Aqeef boleh buat kalau mahu sesi autonomous mencapai DB —
     DIKEMAS KINI 7 Oktober, kunci sahaja tidak cukup.** Perlu **dua** perkara,
     bukan satu:
@@ -76,15 +85,134 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
   build. Sebaik kedua-duanya ada, preview setiap PR jadi cara paling pantas
   untuk Aqeef melihat perubahan tema dengan matanya sendiri — itu nilai
   sebenar P3 untuk projek ini.
-- **Fasa A yang tinggal selepas A5:** A5b 🔴 (reka bentuk 6 template — perlu
-  pereka manusia), A6 (galeri), A7 (editor), A8 (susun atur editor mobile).
-  **A6 membaca `templates` terbit daripada DB**, jadi ia bergantung pada seed
-  A5 benar-benar dijalankan sekali — kalau tidak, galeri kosong dan sesi A6
-  tidak boleh membuktikan apa-apa.
+- **Fasa A yang tinggal selepas A6:** A5b 🔴 (reka bentuk 6 template — perlu
+  pereka manusia), A7 (editor), A8 (susun atur editor mobile). **Task
+  seterusnya ialah A7.** A7 menulis ke DB semasa request (autosave draf), jadi
+  nota `DATABASE_URL` di atas kekal relevan untuknya.
 
 ---
 
 ## Log
+
+## 2026-10-07 — A6 Galeri template
+PR: https://github.com/aqeeflew/naeqah/pull/PENDING
+Apa yang berubah: `lib/template-gallery.ts` (lapisan query + `TIER_LABELS`),
+`components/gallery/` (miniatur tema, petak galeri, `index.ts`), laluan
+`/templates` dan `/templates/[slug]`, satu pautan ke galeri pada halaman utama,
+dan satu pembetulan pada `components/card/placeholder-card.ts` (lihat Nota).
+421 test hijau, termasuk 65 test baharu.
+Keputusan yang diambil:
+- **Galeri direvalidasi (5 minit), bukan dibina sekali.** `SPEC.md` kata admin
+  mesti boleh tambah template **tanpa deploy kod**. Halaman yang dirender
+  semasa build sahaja memungkiri itu: baris yang diterbitkan oleh panel admin
+  (C3) tidak akan muncul sehingga seseorang push commit. Harganya satu minit
+  basi; untungnya C3 benar-benar berfungsi.
+- **`dynamicParams` DIBIARKAN HIDUP pada `/templates/[slug]`, bertentangan
+  dengan `/kad/[slug]`.** Ini bukan terlupa. Kad mematikannya kerana slug yang
+  tiada dalam build mesti 404 dan bukan jatuh ke render pelayan yang query
+  Postgres pada telefon tetamu. Pratonton mahukan yang sebaliknya, atas sebab
+  yang sama seperti revalidate: template yang diterbitkan selepas deploy
+  terakhir mesti boleh dilihat. Slug yang diketahui tetap diprerender.
+- **Baris `templates` yang temanya tiada dalam build DILANGKAU, bukan
+  dilempar.** Ini satu-satunya tempat A6 sengaja berbeza daripada
+  `lib/card-page.ts`, yang melempar. Sebabnya: kad yang rosak dibuka tetamu
+  pada pagi majlis — itu kegagalan paling teruk dalam produk ini; satu baris
+  galeri yang rosak pula hanya satu petak, dan melemparkan ralat akan
+  menurunkan **seluruh katalog** dan menghentikan setiap pengantin daripada
+  membeli mana-mana template lain. Keadaan itu dijangka berlaku: antara
+  seseorang menerbitkan baris dan deploy yang membawa JSON temanya. Ia diberi
+  amaran yang menamakan baris, fail tema dan tema yang memang wujud.
+  `/templates/[slug]` untuk baris yang sama tetap 404.
+- **Tiada harga di mana-mana pada galeri.** `TIER_LABELS` hanya label
+  ("Asas", "Premium", "Eksklusif"). `SPEC.md` kata harga belum muktamad, dan
+  galeri ialah skrin tempat keputusan dibuat — angka ringgit di sini ialah
+  nilai yang direka (CLAUDE.md) yang akan di-screenshot. **Ada test yang gagal
+  kalau satu digit masuk ke dalam label itu.**
+- **Miniatur disaiz dalam `cqw`, bukan rem.** Petak lebarnya ~165px pada
+  telefon dan ~300px pada laptop; taip tetap dalam rem akan penuh pada satu
+  dan terapung dalam ruang kosong pada satu lagi. Unit bekas bermakna miniatur
+  itu gambar yang **sama** pada setiap saiz. `--card-text-scale` tema masih
+  didarab di atasnya, jadi tema yang kuat dan tema yang senyap tetap berbeza
+  di sini seperti ia berbeza pada kad.
+- **Dua lajur pada 390px, bukan satu — diukur, bukan diandaikan.** Versi
+  pertama satu lajur penuh lebar: diukur dengan Chromium, ia meletakkan
+  **1.5 template pada skrin 390×844**, iaitu menyuruh pengantin menatal
+  katalog yang dia cuba bandingkan. Dua lajur meletakkan empat, dan kerana
+  miniatur disaiz dalam unit bekas ia tidak hilang kebolehbacaan pada separuh
+  lebar. Tiga lajur dari `lg`.
+- **Galeri memuatkan webfont setiap tema, bukan hanya halaman pratonton.**
+  Tanpa itu enam tema A5b akan dipaparkan dalam serif lalai browser — enam
+  skema warna dalam satu taip, iaitu separuh daripada apa itu template.
+  Dinyahduplikasi: kosnya satu permintaan per **pasangan font berbeza**, bukan
+  per template. Tema font sistem (klasik) menambah sifar.
+- **Pratonton menggunakan `placeholderCardData`, bukan kad contoh yang
+  di-seed.** Dua fixture itu memang berasingan sejak A5: yang satu ialah
+  tingkap kedai, yang satu lagi kad satu pelanggan contoh. Ada test yang
+  memastikan kandungan seed tidak bocor ke galeri.
+- **Satu notis "ini pratonton" di atas kad, dalam Bahasa Malaysia.** Kad di
+  bawahnya menamakan dewan, tarikh dan dua orang yang tidak wujud. Tanpa
+  label, screenshot halaman ini beredar sebagai jemputan sebenar.
+  `generateMetadata` pula menamakan **template**, bukan pasangan rekaan —
+  bertentangan dengan `/kad/[slug]`, yang sengaja menamakan pasangan kerana ia
+  preview pautan WhatsApp.
+Nota:
+- **Sifar pakej baharu.** `package.json` dan `package-lock.json` tidak
+  disentuh.
+- **PEMBETULAN DI LUAR SKOP SEMPIT A6, sengaja:
+  `components/card/placeholder-card.ts` menyimpan nombor telefon yang
+  kelihatan sebenar** (`012-345 6789`, `019-876 5432`). Sebelum A6 fixture itu
+  dilihat oleh test sahaja. A6 ialah task yang meletakkannya pada halaman
+  **awam**, dan seksyen `hubungi` merender setiap nombor sebagai pautan `tel:`
+  yang boleh ditekan. `lib/seed-data.ts` sudah menetapkan peraturannya
+  (bahagian pelanggan semua-sifar) atas sebab yang sama persis. Ditukar kepada
+  `011-000 0000` dan `013-000 0000`, dengan
+  `components/card/placeholder-card.test.ts` baharu yang menguatkuasakannya.
+  Satu baris dalam `card-sections.test.tsx` dikemas kini mengikutnya.
+- **`npm run db:seed` masih belum pernah berjalan terhadap DB sebenar**, jadi
+  galeri ini masih belum pernah membaca satu baris Postgres sebenar. Lihat
+  `## Tersekat`.
+- **Dibuktikan terhadap build sebenar, bukan hanya test**, dengan probe
+  sementara yang menggantikan dua fungsi query dengan tiga template dalam
+  ingatan (satu klasik, satu tema gelap dengan Google Font, satu bernama
+  panjang). Hasil, selepas `npm run build` + `npm run start` **tanpa
+  `DATABASE_URL` dalam persekitaran pelayan**:
+  - jadual laluan: `/templates` dengan Revalidate `5m`, dan
+    `● /templates/klasik`, `● /templates/moden`, `● /templates/ketiga`.
+  - `/templates` 200, `/templates/klasik` 200, `/templates/tiada-ini` **404** —
+    bukti terus bahawa slug yang tidak dikenali 404 walaupun `dynamicParams`
+    hidup.
+  - `<link rel="stylesheet" href="…Playfair+Display…">` keluar **di dalam
+    `<head>`** pada kedua-dua `/templates` dan `/templates/moden`; `klasik`
+    (font sistem) menghasilkan **sifar** permintaan font.
+  - `.next/server/app/templates/klasik.html` mengandungi kesembilan
+    `data-section`, `<title>Klasik — Pratonton Template | Naeqah</title>`,
+    notis pratonton, dan `011-000 0000` (bukan nombor lama).
+- **Diukur pada 390×844 dengan Chromium sebenar terhadap halaman yang
+  dibina:** `document.scrollWidth` kekal **390** dan **sifar** elemen melepasi
+  tepi kanan pada ketiga-tiga `/templates`, `/templates/klasik` dan
+  `/templates/moden`. Petak: dua sebaris pada 390px (167px setiap satu, x=20
+  dan x=203), tiga sebaris pada 1024px. Nama template yang panjang dipotong
+  dengan ellipsis, tidak membalut.
+- **Probe dibuang selepas semakan**, dan `npm run verify` serta `npm run
+  build` dijalankan semula pada pokok yang bersih. Dua perangkap probe yang
+  patut diingat kalau sesi akan datang mengulangi teknik ini: (1) `return`
+  awal menjadikan kod di bawahnya **tidak tercapai**, dan TypeScript berhenti
+  mempersempit jenis dalam kod tidak tercapai — ia melaporkan ralat jenis yang
+  tiada dalam kod sebenar; gunakan syarat masa jalan (`if (PROBE.length > 0)`)
+  supaya kod di bawah kekal tercapai. (2) Hanya `next start`, bukan `npm run
+  dev`, yang membuktikan apa-apa tentang prerender.
+- **Perangkap test yang memakan masa, dirakam supaya tidak berulang:** React
+  mengangkat `<link precedence>` ke dalam `document.head` **dan menyimpan
+  rekodnya sendiri** tentang href yang sudah dimasukkan. Dalam satu dokumen
+  jsdom, test kedua yang meminta font yang sama dapat **sifar** `<link>`,
+  walaupun selepas membuang nod itu daripada DOM. Jadi `galleryFontHrefs`
+  diuji sebagai fungsi, dan pengangkatan `<head>` dibuktikan terhadap build
+  sebenar di atas.
+- **Test lama yang gagal menandakan masalah sebenar, bukan gangguan.** Dakwaan
+  "tiada data seed dalam pratonton" mula-mula ditulis sebagai
+  `/Aqeef|Nurul|Dewan Seri Kenangan/` dan gagal — kerana **kedua-dua** fixture
+  mempunyai Nurul. Pengenal pasti yang betul ialah yang hanya dimiliki kad
+  seed.
 
 ## 2026-10-07 — OPS1 Langkah 0 jangan tulis ke `main`
 PR: https://github.com/aqeeflew/naeqah/pull/8 (di-merge ke branch yang salah),
