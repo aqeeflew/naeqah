@@ -16,12 +16,21 @@ sesi autonomous. Langkau dan ambil yang seterusnya.
 Pendaftaran perniagaan. Semua payment gateway Malaysia perlu SSM aktif sebelum
 boleh buka akaun merchant. Mula awal — ini ambil masa paling lama.
 
-### [ ] 🔴 P2 — Buka akaun Neon (Postgres)
+### [x] 🔴 P2 — Buka akaun Neon (Postgres)
 Pangkalan data percuma untuk mula. Ambil connection string, simpan dalam `.env`
 tempatan. Jangan commit.
 
-### [ ] 🔴 P3 — Buka akaun Vercel
+**Selesai.** Disimpulkan daripada A2b: `npm run db:push` tidak boleh berjaya
+tanpa akaun Neon dan connection string. Aqeef sahkan kalau ini silap.
+
+### [x] 🔴 P3 — Buka akaun Vercel
 Hosting. Sambung terus ke repo ini supaya setiap merge ke `main` auto-deploy.
+
+**Selesai 5 Oktober 2026.** Diperhatikan terus, bukan dilaporkan: bot Vercel
+kini mengulas pada PR repo ini dan deployment preview untuk
+`task/A4-card-renderer` sampai ke status Ready. Sambungan repo → Vercel wujud.
+Deploy pengeluaran pada merge ke `main` ikut daripada sambungan yang sama,
+tetapi belum pernah diperhatikan berlaku — ia akan berlaku pada merge pertama.
 
 ---
 
@@ -46,10 +55,16 @@ primary key, timestamp, dan foreign key yang betul; `cards.slug` unik dan
 berindeks; `npm run verify` hijau. Pengesahan terhadap DB sebenar berlaku dalam
 A2b, bukan di sini.
 
-### [ ] 🔴 A2b — Sahkan skema pada Neon
+### [x] 🔴 A2b — Sahkan skema pada Neon
 Perlu `DATABASE_URL` dari P2. Jalankan `npm run db:push` pada DB kosong dan
 sahkan setiap jadual terbina seperti yang dijangka. Kalau ada beza, betulkan
 skema dalam A2 dan jana semula migrasi.
+
+**Selesai 5 Oktober 2026 oleh Aqeef sendiri, di luar repo.** Keenam-enam jadual
+wujud dalam Neon; `cards_slug_unique` ada; foreign key `cards` → `bookings`
+dengan `ON DELETE CASCADE` disahkan betul. Tiada perubahan skema diperlukan.
+Sesi autonomous tidak menjalankan `db:push` dan tidak boleh mengesahkannya
+sendiri — ia direkodkan di sini seperti yang dilaporkan.
 
 ### [x] A2c — Betulkan pemuatan DATABASE_URL untuk drizzle-kit
 `drizzle.config.ts` membaca `process.env.DATABASE_URL`, tetapi tiada apa-apa
@@ -72,7 +87,7 @@ tarikh, masa, tempat, koordinat, atur cara, doa, gambar) dan
 **Siap bila:** kedua-dua skema ada taip TypeScript yang dieksport; test unit
 mengesahkan data sah diterima dan data rosak ditolak.
 
-### [ ] A4 — Renderer kad
+### [x] A4 — Renderer kad
 Bina `components/card/` yang menerima data kad + konfigurasi tema dan merender
 kad penuh. Tiada logik khusus-template di mana-mana.
 
