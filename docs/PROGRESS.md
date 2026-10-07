@@ -86,6 +86,75 @@ Apa-apa yang menghalang kemajuan. Kosongkan apabila selesai.
 
 ## Log
 
+## 2026-10-07 — OPS1 Langkah 0 jangan tulis ke `main`
+PR: <PR_URL>
+Apa yang berubah: `CLAUDE.md` sahaja (protokol), plus bahagian baharu
+`## Operasi` dalam `BACKLOG.md` dan entri ini. **Sifar perubahan pada kod
+aplikasi** — tiada fail dalam `app/`, `components/`, `lib/` atau `scripts/`
+disentuh. 356 test hijau, tidak berubah daripada A5.
+Keputusan yang diambil:
+- **Punca pepijat, supaya tiada sesi mengulanginya:** dua arahan yang
+  masing-masing munasabah menulis ke fail yang sama, pada titik selit yang
+  sama. Langkah 0 (lama) menulis nota "sesi dilangkau" ke `docs/PROGRESS.md`
+  pada `main`; langkah 7 menulis entri PR ke `docs/PROGRESS.md` dalam branch.
+  Kedua-duanya menyelit betul-betul selepas `## Log`. Git tidak boleh
+  menggabungkan dua sisipan di baris yang sama, jadi **setiap malam yang satu
+  PR tertinggal menjamin satu konflik**. Protokol yang direka untuk mengelak
+  dua PR berlanggar menjadi punca perlanggaran.
+- **Pembetulan ialah membuang keperluan menulis, bukan menyusun semula fail.**
+  Pilihan lain yang dipertimbang dan ditolak: (a) nota langkah 0 masuk di
+  **hujung** `## Log` supaya titik selit berbeza — masih dua penulis pada satu
+  fail, dan susunan "terbaru di atas" pecah; (b) satu fail berasingan
+  `docs/SKIPPED.md` — fail baharu untuk sesuatu yang tiada sesiapa baca selepas
+  PR di-merge; (c) nota langkah 0 dihantar sebagai PR sendiri — sesi dilangkau
+  kini menghasilkan PR kedua yang juga perlu di-merge, lebih teruk daripada
+  masalah asal. **Komen pada PR menang kerana ia sifar-fail.** Tiada fail
+  diubah bermakna tiada konflik mungkin, bukan sekadar tidak mungkin.
+- **"Jangan push terus ke `main`" kini mutlak.** `CLAUDE.md` sebenarnya sudah
+  menyatakannya tanpa pengecualian, sementara langkah 0 dalam fail yang **sama**
+  menyuruh "commit nota itu" — fail itu bercanggah dengan dirinya sendiri sejak
+  hari pertama. Sekarang peraturan itu menyebut langkah 0 dan nota tersekat
+  secara eksplisit, dan menambah satu baris: kalau mana-mana arahan (termasuk
+  prompt task berjadual) menyuruh commit ke `main`, arahan itu sudah lapuk.
+- **Nota tersekat pergi melalui PR, bukan komen.** Perbezaannya: sesi tersekat
+  ada sesuatu yang **kekal** untuk direkod (apa yang menghalang, apa yang Aqeef
+  perlu sediakan) — itu milik `## Tersekat` dan layak satu PR. Sesi yang
+  dilangkau tidak ada apa-apa yang kekal: sebaik PR itu di-merge, nota
+  "dilangkau" jadi sampah. Itu sebabnya satu dapat PR dan satu dapat komen.
+- **`gh pr list` tidak berfungsi dalam sesi ini.** Ia guna GitHub GraphQL dan
+  GraphQL dipulangkan `HTTP 403` di sini. Langkah 0 lama menamakan arahan itu
+  secara khusus, jadi mana-mana sesi yang mengikutnya secara literal akan dapat
+  ralat — dan sesi yang tersilap menganggapnya "tiada PR terbuka" akan memulakan
+  task baharu di atas `main` yang basi. `CLAUDE.md` kini menamakan alat yang
+  betul (GitHub MCP, atau `gh api` REST) dan menyatakan terus: senarai kosong
+  daripada arahan yang ralat bukan senarai kosong.
+Nota:
+- **PR ini dibina atas branch A5, bukan atas `main`.** Kalau ia dibina atas
+  `main`, ia akan menyelit entri `## Log` di tempat yang sama seperti PR #7
+  (A5) dan **menghasilkan konflik yang OPS1 wujud untuk menghapuskan** — pada
+  pagi yang sama Aqeef minta ia dibaiki. Dengan base `task/A5-tema-pertama-seed`,
+  kedua-dua PR bersih; GitHub akan menyasar semula PR ini ke `main` secara
+  automatik sebaik PR #7 di-merge. **Merge PR #7 dahulu, kemudian PR ini.**
+- **Satu bahagian pembetulan ini di luar jangkauan sesi autonomous.** Prompt
+  task berjadual (disimpan dalam tetapan Claude, bukan dalam repo) masih
+  mengandungi baris: *"Jangan push terus ke main kecuali untuk nota PROGRESS.md
+  dalam langkah 0"* dan *"Tulis satu baris dalam docs/PROGRESS.md … commit nota
+  itu terus ke main"*. Selagi baris itu ada, sesi berjadual akan dapat dua
+  arahan bercanggah — `CLAUDE.md` kata jangan, prompt kata buat. **Aqeef perlu
+  edit prompt task berjadual itu sendiri** supaya ia sepadan dengan langkah 0
+  yang baharu. `CLAUDE.md` sekarang menang kalau berlaku percanggahan (ia
+  menyatakan begitu secara eksplisit), tetapi dua sumber yang bercanggah ialah
+  keadaan yang sama yang menghasilkan pepijat ini.
+- Larian ini dicetuskan manual oleh Aqeef dan **bukan** task `[ ]` seterusnya
+  dalam backlog. Langkah 0 protokol lama akan menghentikan sesi ini (PR #7
+  terbuka); ia diteruskan atas arahan eksplisit Aqeef, kerana task itu sendiri
+  ialah pembetulan protokol.
+- Disemak sendiri: `npm run verify` hijau (356 test, sama seperti A5 — tiada
+  test baharu kerana tiada kod berubah), `git diff` menunjukkan hanya tiga fail
+  `.md`.
+- **Task seterusnya ialah A6 (galeri template)**, selepas kedua-dua PR di-merge
+  dan `npm run db:seed` dijalankan sekali. Lihat `## Tersekat`.
+
 ## 2026-10-07 — A5 Tema pertama + seed
 PR: <PR_URL>
 Apa yang berubah: tambah `lib/themes/klasik.json` (tema asas pertama) dan

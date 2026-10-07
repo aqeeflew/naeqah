@@ -34,6 +34,38 @@ tetapi belum pernah diperhatikan berlaku — ia akan berlaku pada merge pertama.
 
 ---
 
+## Operasi
+
+Kerja pada protokol dan perkakas sesi itu sendiri, bukan pada produk. Task di
+sini tidak menyentuh kod aplikasi.
+
+### [x] OPS1 — Langkah 0 jangan tulis ke `main`
+
+Protokol langkah 0 (versi lama) menyuruh sesi yang dilangkau menulis nota terus
+ke `docs/PROGRESS.md` pada `main`. Langkah 7 menyuruh setiap PR menulis ke fail
+yang **sama**, di tempat yang sama — betul-betul selepas `## Log`. Jadi
+mana-mana PR yang tertinggal semalaman dijamin berkonflik dan butang Merge
+terkunci sehingga Aqeef selesaikan dengan tangan.
+
+Berlaku dua kali, bukan teori: PR #1 (4 Okt), dan PR #6 selepas dua larian
+berjadual (6 dan 7 Okt) masing-masing menambah satu nota ke `main`.
+
+Pembetulan: sesi yang dilangkau tinggalkan **komen pada PR yang terbuka itu**
+dan tamat — sifar fail diubah, jadi sifar peluang berlanggar.
+
+**Siap bila:** langkah 0 dalam `CLAUDE.md` ditulis semula (semak PR, komen,
+jangan commit, jangan sentuh `main`, tamat); bahagian "Bila tersekat"
+menyatakan nota tersekat dihantar melalui PR; peraturan keras "Jangan push
+terus ke `main`" jadi mutlak tanpa pengecualian; tiada perubahan pada kod
+aplikasi; `npm run verify` hijau.
+
+**Selesai 7 Oktober 2026.** Satu bahagian pembetulan ini **di luar repo** dan
+perlu Aqeef: prompt task berjadual masih mengandungi baris lama "Jangan push
+terus ke main kecuali untuk nota PROGRESS.md dalam langkah 0". Sesi autonomous
+tidak boleh mengeditnya. Lihat `PROGRESS.md`.
+
+---
+
 ## Fasa A — Teras (Minggu 1–4)
 
 ### [x] A1 — Init projek
