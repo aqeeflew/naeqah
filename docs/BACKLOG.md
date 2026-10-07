@@ -146,12 +146,26 @@ egress sesi menyekat hos Neon walaupun kuncinya ada. Aqeef perlu menjalankan
 Keputusan estetik — perlu pereka manusia. Sesi autonomous tidak boleh buat ini.
 Output: 6 fail tema JSON + aset berlesen komersial.
 
-### [ ] A6 — Galeri template
+### [x] A6 — Galeri template
 Halaman `/templates` menyenaraikan template terbit dengan kad preview. Tekan
 satu untuk lihat preview penuh di `/templates/[slug]`.
 
 **Siap bila:** galeri membaca dari DB, bukan senarai hardcoded; berfungsi pada
 390px; preview memaparkan tema sebenar dengan data placeholder.
+
+**Ditulis sepenuhnya 7 Oktober 2026; ketiga-tiga kriteria dipenuhi, satu belum
+dilihat terhadap DB sebenar.** Galeri membaca `templates` yang `published`
+melalui `lib/template-gallery.ts` — tiada senarai dalam kod, dan ada test yang
+gagal kalau satu masuk. 390px diukur dengan Chromium terhadap halaman yang
+dibina: `scrollWidth` 390, sifar elemen melimpah, dua lajur pada telefon dan
+tiga pada laptop. Pratonton merender tema sebenar dengan `placeholderCardData`
+melalui renderer yang sama seperti `/kad/[slug]`.
+
+Yang belum: **query itu belum pernah berjalan terhadap Postgres sebenar** —
+sesi autonomous tiada `DATABASE_URL` dan egressnya menyekat hos Neon, jadi
+bukti di atas datang daripada probe build dengan fixture dalam ingatan. Aqeef
+perlu menjalankan `npm run db:seed` sekali (kriteria A5 yang sama) kemudian
+membuka `/templates`. Lihat `PROGRESS.md`.
 
 ### [ ] A7 — Editor butiran majlis
 Borang di `/editor/[cardId]` dengan preview langsung di sebelah. Medan mengikut

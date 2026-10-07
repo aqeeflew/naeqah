@@ -285,8 +285,8 @@ describe('hubungi', () => {
   it('makes each number tappable without reformatting what was typed', () => {
     renderSection('hubungi');
 
-    const link = screen.getByRole('link', { name: '012-345 6789' });
-    expect(link).toHaveAttribute('href', 'tel:0123456789');
+    const link = screen.getByRole('link', { name: '011-000 0000' });
+    expect(link).toHaveAttribute('href', 'tel:0110000000');
     expect(screen.getByText('Bapa pengantin lelaki')).toBeInTheDocument();
   });
 });
