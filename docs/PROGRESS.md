@@ -94,6 +94,7 @@ renderer itu; dua PR akan berlanggar. Semakan keadaan PR: Vercel hijau
 (deployment selesai), tiada semakan dan tiada komen yang belum dijawab —
 tiada apa-apa untuk dibetulkan di sana. PR #6 juga menanda A2b `[x]` atas
 laporan Aqeef. Merge PR #6 untuk membuka sesi seterusnya.
+
 ## 2026-10-05 — A4 Renderer kad
 PR: https://github.com/aqeeflew/naeqah/pull/6
 Apa yang berubah: tambah `components/card/` — `card-renderer.tsx` (akar),
